@@ -37,13 +37,13 @@
   var log = document.getElementById('log');
   if (log) {
     var lines = [
-      ['09:02', 'Research', '#5FE0F0', 'Reading 14 sources on warehouse automation in Poland.'],
-      ['09:06', 'Research', '#5FE0F0', 'Brief ready with 11 claims and links. Handed to Fact-checker.'],
-      ['09:07', 'Fact-checker', '#6EF0B0', '10 of 11 claims confirmed. 1 flagged: the source is from 2019.'],
-      ['09:12', 'Writer', '#FFC25E', 'Draft updated. The flagged claim is removed.'],
-      ['09:13', 'Lead scout', '#8E7BFF', 'Found 9 companies that match your profile. 6 have a named contact.'],
-      ['09:15', 'Assistant', '#7AA7FF', 'Prepared 6 outreach drafts. None sent.'],
-      ['09:15', 'Needs you', '#FFC25E', 'Approve the article and the 6 drafts before anything goes out.', true]
+      ['09:02', 'Research', '#1B8FA6', 'Reading 14 sources on warehouse automation in Poland.'],
+      ['09:06', 'Research', '#1B8FA6', 'Brief ready with 11 claims and links. Handed to Fact-checker.'],
+      ['09:07', 'Fact-checker', '#1E9E6B', '10 of 11 claims confirmed. 1 flagged: the source is from 2019.'],
+      ['09:12', 'Writer', '#C98A12', 'Draft updated. The flagged claim is removed.'],
+      ['09:13', 'Lead scout', '#6B5BD6', 'Found 9 companies that match your profile. 6 have a named contact.'],
+      ['09:15', 'Assistant', '#3B6FD8', 'Prepared 6 outreach drafts. None sent.'],
+      ['09:15', 'Needs you', '#C98A12', 'Approve the article and the 6 drafts before anything goes out.', true]
     ];
     var i = 0;
     function add() {

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self' mailto:; object-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="theme-color" content="#080C1A">
+<meta name="theme-color" content="#FAFAF8">
 <title>Northlight Agents | AI agents for business, with a log you can read</title>
 <meta name="description" content="Northlight Agents designs, builds and runs teams of AI agents for businesses: research, lead generation, content, fact-checking and operations. Every agent keeps a log and nothing goes out without your approval.">
 <link rel="canonical" href="https://northlightagents.com/">
@@ -17,35 +17,39 @@
 <meta property="og:url" content="https://northlightagents.com/">
 <meta property="og:image" content="https://northlightagents.com/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preload" href="syne-800.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="manrope-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="style.css">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Northlight Agents","url":"https://northlightagents.com","logo":"https://northlightagents.com/favicon.svg","founder":{"@type":"Person","name":"Pranav Arya"},"description":"We design, build and run teams of AI agents for businesses."}</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site"><div class="w">
-  <a class="brand" href="index.html" aria-label="Northlight Agents, home"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lga" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5FE0F0"/><stop offset="1" stop-color="#8E7BFF"/></linearGradient></defs><circle cx="16" cy="16" r="13" fill="none" stroke="url(#lga)" stroke-width="1.6"/><path d="M16 5.5l2.1 8.4 8.4 2.1-8.4 2.1-2.1 8.4-2.1-8.4-8.4-2.1 8.4-2.1z" fill="url(#lga)"/></svg>Northlight <span>Agents</span></a>
+  <a class="brand" href="index.html" aria-label="Northlight Agents, home"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M16 6.5l2 7.5 7.5 2-7.5 2-2 7.5-2-7.5-7.5-2 7.5-2z" fill="currentColor"/></svg>Northlight <span>Agents</span></a>
   <button class="menu" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
   <nav id="nav" aria-label="Main"><a href="services.html">Services</a><a href="office.html">Live demo</a><a href="about.html">About</a><a href="blog.html">Blog</a><a class="btn small" href="contact.html">Book a call</a></nav>
 </div></header>
 <main id="main">
 
 <section class="hero" aria-label="Introduction">
-  <canvas id="stage" aria-hidden="true"></canvas>
-  <div class="w"><div class="copy">
+  <div class="w">
+  <div>
     <p class="kicker"><i></i>Taking on new pilot projects</p>
-    <h1>An AI workforce you can actually <span class="grad">watch work.</span></h1>
+    <h1>An AI workforce you can actually watch work.</h1>
     <p class="lead">Northlight Agents designs, builds and runs teams of AI agents for businesses: research, lead generation, content, fact-checking and everyday operations. Every agent keeps a readable log, and nothing goes out without your approval.</p>
     <div class="cta"><a class="btn" href="contact.html">Book a discovery call <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="btn ghost" href="office.html">Watch the agents work</a></div>
-    <p>Free 30 minute call. We tell you honestly if an agent is the right fit.</p>
-  </div></div>
+    <p class="note">Free 30 minute call. We tell you honestly if an agent is the right fit.</p>
+  </div>
+  <div class="panel" role="img" aria-label="Sample activity log showing agents handing work to each other">
+    <header>Agent activity <em>Sample</em></header>
+    <ol id="log" aria-hidden="true"></ol>
+  </div>
+  </div>
 </section>
-<div class="ticker" aria-label="Agents connect to the tools you already use"><div class="track"><span>Email</span><span>WhatsApp</span><span>Slack</span><span>Google Workspace</span><span>Microsoft 365</span><span>Notion</span><span>HubSpot</span><span>Shopify</span><span>Airtable</span><span>Your own database</span><span>Your website</span><span>Email</span><span>WhatsApp</span><span>Slack</span><span>Google Workspace</span><span>Microsoft 365</span><span>Notion</span><span>HubSpot</span><span>Shopify</span><span>Airtable</span><span>Your own database</span><span>Your website</span></div></div>
+<div class="connects"><p><strong>Works with the tools you already use:</strong> email, WhatsApp, Slack, Google Workspace, Microsoft 365, Notion, HubSpot, Shopify and your own database.</p></div>
 
 <section class="w">
   <div class="head rv"><h2>Six jobs we hand to agents.</h2><p class="lead">Each agent has one clear role, its own tools and its own log. Together they behave like a small team that never forgets a task.</p></div>
-  <div class="rows"><a class="row rv" style="--c:#5FE0F0" href="services.html#research"><h3><i></i>Research</h3><p>Market scans, competitor briefs and summaries of long documents, with a link behind every claim.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="row rv" style="--c:#8E7BFF" href="services.html#leads"><h3><i></i>Lead generation</h3><p>Finds companies that fit your ideal customer, scores them, and drafts personal outreach for you to approve.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="row rv" style="--c:#FFC25E" href="services.html#content"><h3><i></i>Content and social</h3><p>Articles, newsletters and posts in your voice, edited for search and checked before they go out.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="row rv" style="--c:#6EF0B0" href="services.html#checking"><h3><i></i>Fact-checking</h3><p>Reads a draft, checks each claim against sources, and flags what it cannot confirm.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="row rv" style="--c:#7AA7FF" href="services.html#assistants"><h3><i></i>Personal assistants</h3><p>Inbox triage, scheduling, reminders and follow-ups, prepared for one person or a whole team.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="row rv" style="--c:#FF8FA3" href="services.html#ops"><h3><i></i>Operations and support</h3><p>Answers customer questions on WhatsApp, email or your website, and hands the hard ones to a person.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a></div>
+  <div class="rows"><a class="row rv" style="--c:#1B8FA6" href="services.html#research"><h3><i></i>Research</h3><p>Market scans, competitor briefs and summaries of long documents, with a link behind every claim.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="row rv" style="--c:#6B5BD6" href="services.html#leads"><h3><i></i>Lead generation</h3><p>Finds companies that fit your ideal customer, scores them, and drafts personal outreach for you to approve.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="row rv" style="--c:#C98A12" href="services.html#content"><h3><i></i>Content and social</h3><p>Articles, newsletters and posts in your voice, edited for search and checked before they go out.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="row rv" style="--c:#1E9E6B" href="services.html#checking"><h3><i></i>Fact-checking</h3><p>Reads a draft, checks each claim against sources, and flags what it cannot confirm.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="row rv" style="--c:#3B6FD8" href="services.html#assistants"><h3><i></i>Personal assistants</h3><p>Inbox triage, scheduling, reminders and follow-ups, prepared for one person or a whole team.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="row rv" style="--c:#D1566B" href="services.html#ops"><h3><i></i>Operations and support</h3><p>Answers customer questions on WhatsApp, email or your website, and hands the hard ones to a person.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a></div>
 </section>
 
 <section class="rule">
@@ -53,23 +57,21 @@
     <div class="rv">
       <h2>Built so you can trust it.</h2>
       <p class="lead">Handing work to software only makes sense if you stay in control. So control is the first thing we design, not the last.</p>
-      <div class="points">
+    </div>
+    <div class="rv">
+      <div class="points" style="margin:0">
         <div><h3>You approve what leaves</h3><p>Emails, posts and replies wait for your sign-off. Agents prepare, people decide.</p></div>
         <div><h3>A log for every agent</h3><p>What it read, what it decided, what it produced, who it handed it to. In plain language.</p></div>
         <div><h3>Sources for every claim</h3><p>Research and facts come with links, so you can verify them yourself in seconds.</p></div>
         <div><h3>Access you can take back</h3><p>Agents only touch the accounts you connect, with the minimum permissions needed, and you can revoke them at any time.</p></div>
       </div>
     </div>
-    <div class="term rv" role="img" aria-label="Sample activity log showing agents handing work to each other">
-      <header><i></i><i></i><i></i><span>Agent activity, sample</span></header>
-      <ol id="log" aria-hidden="true"></ol>
-    </div>
   </div>
 </section>
 
 <section class="rule">
   <div class="w split">
-    <div class="device rv"><a class="frame" data-tilt="6" href="office.html" aria-label="Open the live agent office demo"><img src="office-preview.jpg" width="1200" height="800" alt="Top-down view of the Agent Office demo: a team of AI agents working at desks" loading="lazy"></a></div>
+    <div class="rv"><a class="shot" href="office.html" aria-label="Open the live agent office demo"><img src="office-preview.jpg" width="1200" height="800" alt="Top-down view of the Agent Office demo: a team of AI agents working at desks" loading="lazy"></a></div>
     <div class="rv">
       <h2>Step into the Agent Office.</h2>
       <p class="lead">A top-down view of an AI team at work: researchers, writers, fact-checkers and lead scouts handing tasks to each other, taking breaks, and logging every move.</p>
@@ -95,7 +97,7 @@
 <section class="rule">
   <div class="w">
     <div class="head rv" style="display:flex;justify-content:space-between;align-items:end;gap:20px;max-width:none;flex-wrap:wrap"><div><h2>From the blog.</h2><p class="lead" style="margin:0">Practical notes, no hype.</p></div><a class="btn ghost small" href="blog.html">All articles</a></div>
-    <div class="cards"><a class="card rv" style="--c:#5FE0F0" href="blog-what-is-an-ai-agent.html"><time datetime="2026-10-25">25 October 2026</time><h3 style="margin-top:12px">What an AI agent is, and what it is not</h3><p>A plain definition of an AI agent, how it differs from a chatbot or a script, and the kinds of work it suits.</p></a><a class="card rv" style="--c:#5FE0F0" href="blog-before-you-automate.html"><time datetime="2026-10-25">25 October 2026</time><h3 style="margin-top:12px">Five questions to ask before you automate a business process</h3><p>A short checklist to decide whether a task is a good fit for an AI agent, before you spend any money.</p></a><a class="card rv" style="--c:#5FE0F0" href="blog-agents-should-keep-a-log.html"><time datetime="2026-10-25">25 October 2026</time><h3 style="margin-top:12px">Why every AI agent should keep a log you can read</h3><p>Why transparency matters when AI agents do real work for your business, and what a good activity log contains.</p></a></div>
+    <div class="cards"><a class="card rv" href="blog-what-is-an-ai-agent.html"><time datetime="2026-10-25">25 October 2026</time><h3 style="margin-top:12px">What an AI agent is, and what it is not</h3><p>A plain definition of an AI agent, how it differs from a chatbot or a script, and the kinds of work it suits.</p></a><a class="card rv" href="blog-before-you-automate.html"><time datetime="2026-10-25">25 October 2026</time><h3 style="margin-top:12px">Five questions to ask before you automate a business process</h3><p>A short checklist to decide whether a task is a good fit for an AI agent, before you spend any money.</p></a><a class="card rv" href="blog-agents-should-keep-a-log.html"><time datetime="2026-10-25">25 October 2026</time><h3 style="margin-top:12px">Why every AI agent should keep a log you can read</h3><p>Why transparency matters when AI agents do real work for your business, and what a good activity log contains.</p></a></div>
   </div>
 </section>
 <section class="w"><div class="cta-band rv">
@@ -107,7 +109,7 @@
 </main>
 <footer class="site-foot"><div class="w">
   <div class="foot-grid">
-    <div><a class="brand" href="index.html"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lgb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5FE0F0"/><stop offset="1" stop-color="#8E7BFF"/></linearGradient></defs><circle cx="16" cy="16" r="13" fill="none" stroke="url(#lgb)" stroke-width="1.6"/><path d="M16 5.5l2.1 8.4 8.4 2.1-8.4 2.1-2.1 8.4-2.1-8.4-8.4-2.1 8.4-2.1z" fill="url(#lgb)"/></svg>Northlight <span>Agents</span></a>
+    <div><a class="brand" href="index.html"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M16 6.5l2 7.5 7.5 2-7.5 2-2 7.5-2-7.5-7.5-2 7.5-2z" fill="currentColor"/></svg>Northlight <span>Agents</span></a>
       <p style="margin-top:16px">We design, build and run teams of AI agents for businesses. Every agent keeps a log you can read, and nothing is sent without your approval.</p></div>
     <div><h4>Company</h4><a href="about.html">About</a><a href="blog.html">Blog</a><a href="contact.html">Contact</a></div>
     <div><h4>Services</h4><a href="services.html#research">Research</a><a href="services.html#leads">Lead generation</a><a href="services.html#content">Content</a><a href="services.html#ops">Operations</a></div>
@@ -115,6 +117,6 @@
   </div>
   <div class="legal"><span>&copy; <span id="yr">2026</span> Northlight Agents. Operated by Pranav Arya.</span><span>Working with teams worldwide, remotely.</span></div>
 </div></footer>
-<script src="three.min.js" defer></script><script src="hero3d.js" defer></script><script src="main.js" defer></script>
+<script src="main.js" defer></script>
 </body>
 </html>
