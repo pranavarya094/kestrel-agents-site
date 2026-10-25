@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kestrel Agents | AI agents that do the work for your business</title>
+<meta name="description" content="We build AI agents for businesses: lead generation, content, research, fact-checking and operations, running around the clock and reporting everything they do.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#ECEFF3;--surface:#fff;--surface-2:#E2E7ED;--ink:#17202A;--ink-2:#51606F;--line:#CAD2DA;--accent:#E2552B;--good:#23895C;
+--c1:#2A9D8F;--c2:#E2A62F;--c3:#7467DE;--c4:#3F83DB;
+--f-d:'Pixelify Sans',ui-monospace,monospace;--f-b:'IBM Plex Sans',system-ui,sans-serif;--f-m:'IBM Plex Mono',ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root{--bg:#0E1217;--surface:#161C23;--surface-2:#202833;--ink:#E8EDF2;--ink-2:#9DAAB8;--line:#2A3340;--accent:#FF7C52;--good:#4CC38A;color-scheme:dark}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-b)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.w{max-width:1040px;margin:0 auto;padding-inline:max(20px,env(safe-area-inset-left))}
+nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px}
+.logo{font:700 22px/1 var(--f-d);text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo i{display:grid;grid-template-columns:repeat(2,8px);gap:2px}
+.logo i b{width:8px;height:8px;display:block}
+.btn{display:inline-block;text-decoration:none;font-weight:600;padding:12px 20px;border-radius:6px;border:1px solid var(--ink);background:var(--ink);color:var(--bg)}
+.btn:hover{opacity:.88}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{background:var(--surface-2);opacity:1}
+nav .btn{padding:8px 14px;font-size:14px}
+.hero{padding-block:56px 64px;display:grid;gap:36px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:880px){.hero{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:center}}
+.tag{font:500 12px var(--f-m);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin:0 0 14px}
+h1{font:700 clamp(36px,6.2vw,60px)/1.02 var(--f-d);margin:0 0 20px;text-wrap:balance}
+.lead{font-size:18px;color:var(--ink-2);max-width:52ch;margin:0 0 28px}
+.cta{display:flex;flex-wrap:wrap;gap:10px}
+.board{border:1px solid var(--line);background:var(--surface);border-radius:8px;overflow:hidden}
+.board h2{margin:0;padding:12px 14px;border-bottom:1px solid var(--line);font:500 12px var(--f-m);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);display:flex;justify-content:space-between}
+.board h2 span{color:var(--good)}
+.board ul{list-style:none;margin:0;padding:0}
+.board li{display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:center;padding:11px 14px;border-bottom:1px solid var(--line);font-size:14px}
+.board li:last-child{border:0}
+.board li i{width:10px;height:10px;border-radius:2px}
+.board li small{font:400 12px var(--f-m);color:var(--ink-2)}
+section{padding-block:56px;border-top:1px solid var(--line)}
+h2.s{font:700 clamp(26px,4vw,36px)/1.1 var(--f-d);margin:0 0 12px}
+.sub{color:var(--ink-2);max-width:60ch;margin:0 0 32px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.card{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:20px}
+.card .sw{width:28px;height:28px;border-radius:5px;margin-bottom:14px}
+.card h3{margin:0 0 6px;font-size:18px}
+.card p{margin:0;color:var(--ink-2);font-size:15px}
+.steps{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));counter-reset:s}
+.steps div{border-left:2px solid var(--line);padding:2px 0 2px 16px}
+.steps h3{margin:0 0 4px;font-size:17px}
+.steps p{margin:0;color:var(--ink-2);font-size:15px}
+.two{display:grid;gap:28px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:880px){.two{grid-template-columns:1fr 1fr}}
+.list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.list li{padding-left:22px;position:relative}
+.list li::before{content:"";position:absolute;left:0;top:9px;width:9px;height:9px;background:var(--good);border-radius:2px}
+.close{text-align:center;padding-block:72px}
+.close h2{font:700 clamp(28px,5vw,44px)/1.1 var(--f-d);margin:0 0 14px;text-wrap:balance}
+.close p{color:var(--ink-2);margin:0 auto 26px;max-width:50ch}
+footer{border-top:1px solid var(--line);padding-block:24px 40px;color:var(--ink-2);font-size:14px;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+</style>
+</head>
+<body>
+<div class="w">
+<nav aria-label="Main">
+  <a class="logo" href="#top"><i aria-hidden="true"><b style="background:var(--c1)"></b><b style="background:var(--c2)"></b><b style="background:var(--c3)"></b><b style="background:var(--c4)"></b></i>Kestrel Agents</a>
+  <a class="btn" href="#contact">Talk to us</a>
+</nav>
+
+<header class="hero" id="top">
+  <div>
+    <p class="tag">AI agents for business</p>
+    <h1>A team of AI agents that works while you sleep.</h1>
+    <p class="lead">We build and run AI agents for your company: finding leads, writing and fact-checking content, researching markets and keeping operations moving. You see every step they take.</p>
+    <div class="cta"><a class="btn" href="#contact">Book a call</a><a class="btn ghost" href="#what">What agents can do</a></div>
+  </div>
+  <aside class="board" aria-label="Example of a daily agent report">
+    <h2>Example daily report <span>sample</span></h2>
+    <ul>
+      <li><i style="background:var(--c3)"></i>Lead Generation: new qualified leads<small>+ list</small></li>
+      <li><i style="background:var(--c1)"></i>Research: market brief delivered<small>+ brief</small></li>
+      <li><i style="background:var(--c2)"></i>Content: article drafted and fact-checked<small>+ draft</small></li>
+      <li><i style="background:var(--c4)"></i>Operations: inbox sorted, replies drafted<small>+ queue</small></li>
+    </ul>
+  </aside>
+</header>
+
+<section id="what">
+  <h2 class="s">What your agents can take on</h2>
+  <p class="sub">Each agent has one clear job, its own tools and a log of everything it did. We start with the work that eats the most of your team's time.</p>
+  <div class="grid">
+    <div class="card"><div class="sw" style="background:var(--c3)"></div><h3>Lead generation</h3><p>Find companies that fit your ideal customer, score them, and prepare personal outreach drafts for your approval.</p></div>
+    <div class="card"><div class="sw" style="background:var(--c1)"></div><h3>Research and fact-checking</h3><p>Market scans, competitor briefs and source checks, with links to every claim so you can verify it yourself.</p></div>
+    <div class="card"><div class="sw" style="background:var(--c2)"></div><h3>Content and social</h3><p>Articles, newsletters and posts written in your voice, edited for search, and checked before they go out.</p></div>
+    <div class="card"><div class="sw" style="background:var(--c4)"></div><h3>Operations and support</h3><p>Inbox triage, scheduling, booking and customer questions answered on WhatsApp, email or your website.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2 class="s">How we work with you</h2>
+  <p class="sub">Small start, clear results, then more agents once the first ones prove themselves.</p>
+  <div class="steps">
+    <div><h3>1. Find the task</h3><p>We map your week and pick one repeatable job that is costing you hours.</p></div>
+    <div><h3>2. Build the agent</h3><p>We build it with your tools and data, and test it on real examples.</p></div>
+    <div><h3>3. Review together</h3><p>You approve outputs at first. Agents never send anything on your behalf without your sign-off.</p></div>
+    <div><h3>4. Add more agents</h3><p>Once it works, we add teammates: researcher, writer, checker, outreach.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="two">
+    <div>
+      <h2 class="s">You can see the work</h2>
+      <p class="sub">Every agent keeps a plain-language log: what it searched, what it read, what it produced and who it handed it to. Ask any agent what it did and you get the full answer.</p>
+    </div>
+    <ul class="list">
+      <li>Full activity log per agent</li>
+      <li>Human approval before anything is sent or published</li>
+      <li>Sources attached to research and facts</li>
+      <li>Contact rules built in for GDPR and local marketing law</li>
+      <li>Start with one agent, scale when it pays off</li>
+    </ul>
+  </div>
+</section>
+
+<section class="close" id="contact">
+  <h2>Tell us what you want to hand off.</h2>
+  <p>Describe one task that takes too much of your team's time. We will tell you honestly whether an agent can do it and what it would take.</p>
+  <a class="btn" href="https://pranavarya.com" rel="noopener">Get in touch</a>
+</section>
+
+<footer><span>Kestrel Agents, Berlin</span><span>Built by Pranav Arya</span></footer>
+</div>
+</body>
+</html>
