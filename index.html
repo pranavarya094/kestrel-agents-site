@@ -3,138 +3,118 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Kestrel Agents | AI agents that do the work for your business</title>
-<meta name="description" content="We build AI agents for businesses: lead generation, content, research, fact-checking and operations, running around the clock and reporting everything they do.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#ECEFF3;--surface:#fff;--surface-2:#E2E7ED;--ink:#17202A;--ink-2:#51606F;--line:#CAD2DA;--accent:#E2552B;--good:#23895C;
---c1:#2A9D8F;--c2:#E2A62F;--c3:#7467DE;--c4:#3F83DB;
---f-d:'Pixelify Sans',ui-monospace,monospace;--f-b:'IBM Plex Sans',system-ui,sans-serif;--f-m:'IBM Plex Mono',ui-monospace,monospace}
-@media (prefers-color-scheme:dark){:root{--bg:#0E1217;--surface:#161C23;--surface-2:#202833;--ink:#E8EDF2;--ink-2:#9DAAB8;--line:#2A3340;--accent:#FF7C52;--good:#4CC38A;color-scheme:dark}}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-b)}
-a{color:inherit}
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.w{max-width:1040px;margin:0 auto;padding-inline:max(20px,env(safe-area-inset-left))}
-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px}
-.logo{font:700 22px/1 var(--f-d);text-decoration:none;display:flex;align-items:center;gap:10px}
-.logo i{display:grid;grid-template-columns:repeat(2,8px);gap:2px}
-.logo i b{width:8px;height:8px;display:block}
-.btn{display:inline-block;text-decoration:none;font-weight:600;padding:12px 20px;border-radius:6px;border:1px solid var(--ink);background:var(--ink);color:var(--bg)}
-.btn:hover{opacity:.88}
-.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
-.btn.ghost:hover{background:var(--surface-2);opacity:1}
-nav .btn{padding:8px 14px;font-size:14px}
-.hero{padding-block:56px 64px;display:grid;gap:36px;grid-template-columns:minmax(0,1fr)}
-@media(min-width:880px){.hero{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:center}}
-.tag{font:500 12px var(--f-m);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin:0 0 14px}
-h1{font:700 clamp(36px,6.2vw,60px)/1.02 var(--f-d);margin:0 0 20px;text-wrap:balance}
-.lead{font-size:18px;color:var(--ink-2);max-width:52ch;margin:0 0 28px}
-.cta{display:flex;flex-wrap:wrap;gap:10px}
-.board{border:1px solid var(--line);background:var(--surface);border-radius:8px;overflow:hidden}
-.board h2{margin:0;padding:12px 14px;border-bottom:1px solid var(--line);font:500 12px var(--f-m);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);display:flex;justify-content:space-between}
-.board h2 span{color:var(--good)}
-.board ul{list-style:none;margin:0;padding:0}
-.board li{display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:center;padding:11px 14px;border-bottom:1px solid var(--line);font-size:14px}
-.board li:last-child{border:0}
-.board li i{width:10px;height:10px;border-radius:2px}
-.board li small{font:400 12px var(--f-m);color:var(--ink-2)}
-section{padding-block:56px;border-top:1px solid var(--line)}
-h2.s{font:700 clamp(26px,4vw,36px)/1.1 var(--f-d);margin:0 0 12px}
-.sub{color:var(--ink-2);max-width:60ch;margin:0 0 32px}
-.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-.card{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:20px}
-.card .sw{width:28px;height:28px;border-radius:5px;margin-bottom:14px}
-.card h3{margin:0 0 6px;font-size:18px}
-.card p{margin:0;color:var(--ink-2);font-size:15px}
-.steps{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));counter-reset:s}
-.steps div{border-left:2px solid var(--line);padding:2px 0 2px 16px}
-.steps h3{margin:0 0 4px;font-size:17px}
-.steps p{margin:0;color:var(--ink-2);font-size:15px}
-.two{display:grid;gap:28px;grid-template-columns:minmax(0,1fr)}
-@media(min-width:880px){.two{grid-template-columns:1fr 1fr}}
-.list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
-.list li{padding-left:22px;position:relative}
-.list li::before{content:"";position:absolute;left:0;top:9px;width:9px;height:9px;background:var(--good);border-radius:2px}
-.close{text-align:center;padding-block:72px}
-.close h2{font:700 clamp(28px,5vw,44px)/1.1 var(--f-d);margin:0 0 14px;text-wrap:balance}
-.close p{color:var(--ink-2);margin:0 auto 26px;max-width:50ch}
-footer{border-top:1px solid var(--line);padding-block:24px 40px;color:var(--ink-2);font-size:14px;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
-</style>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self' mailto:; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#080C1A">
+<title>Northlight Agents | AI agents for business, with a log you can read</title>
+<meta name="description" content="Northlight Agents designs, builds and runs teams of AI agents for businesses: research, lead generation, content, fact-checking and operations. Every agent keeps a log and nothing goes out without your approval.">
+<link rel="canonical" href="https://northlightagents.com/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:site_name" content="Northlight Agents">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Northlight Agents | AI agents for business, with a log you can read">
+<meta property="og:description" content="Northlight Agents designs, builds and runs teams of AI agents for businesses: research, lead generation, content, fact-checking and operations. Every agent keeps a log and nothing goes out without your approval.">
+<meta property="og:url" content="https://northlightagents.com/">
+<meta property="og:image" content="https://northlightagents.com/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="syne-800.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="manrope-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Northlight Agents","url":"https://northlightagents.com","logo":"https://northlightagents.com/favicon.svg","founder":{"@type":"Person","name":"Pranav Arya"},"description":"We design, build and run teams of AI agents for businesses."}</script>
 </head>
 <body>
-<div class="w">
-<nav aria-label="Main">
-  <a class="logo" href="#top"><i aria-hidden="true"><b style="background:var(--c1)"></b><b style="background:var(--c2)"></b><b style="background:var(--c3)"></b><b style="background:var(--c4)"></b></i>Kestrel Agents</a>
-  <a class="btn" href="#contact">Talk to us</a>
-</nav>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site"><div class="w">
+  <a class="brand" href="index.html" aria-label="Northlight Agents, home"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lga" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5FE0F0"/><stop offset="1" stop-color="#8E7BFF"/></linearGradient></defs><circle cx="16" cy="16" r="13" fill="none" stroke="url(#lga)" stroke-width="1.6"/><path d="M16 5.5l2.1 8.4 8.4 2.1-8.4 2.1-2.1 8.4-2.1-8.4-8.4-2.1 8.4-2.1z" fill="url(#lga)"/></svg>Northlight <span>Agents</span></a>
+  <button class="menu" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+  <nav id="nav" aria-label="Main"><a href="services.html">Services</a><a href="office.html">Live demo</a><a href="about.html">About</a><a href="blog.html">Blog</a><a class="btn small" href="contact.html">Book a call</a></nav>
+</div></header>
+<main id="main">
 
-<header class="hero" id="top">
-  <div>
-    <p class="tag">AI agents for business</p>
-    <h1>A team of AI agents that works while you sleep.</h1>
-    <p class="lead">We build and run AI agents for your company: finding leads, writing and fact-checking content, researching markets and keeping operations moving. You see every step they take.</p>
-    <div class="cta"><a class="btn" href="#contact">Book a call</a><a class="btn ghost" href="#what">What agents can do</a></div>
-  </div>
-  <aside class="board" aria-label="Example of a daily agent report">
-    <h2>Example daily report <span>sample</span></h2>
-    <ul>
-      <li><i style="background:var(--c3)"></i>Lead Generation: new qualified leads<small>+ list</small></li>
-      <li><i style="background:var(--c1)"></i>Research: market brief delivered<small>+ brief</small></li>
-      <li><i style="background:var(--c2)"></i>Content: article drafted and fact-checked<small>+ draft</small></li>
-      <li><i style="background:var(--c4)"></i>Operations: inbox sorted, replies drafted<small>+ queue</small></li>
-    </ul>
-  </aside>
-</header>
+<section class="hero" aria-label="Introduction">
+  <canvas id="stage" aria-hidden="true"></canvas>
+  <div class="w"><div class="copy">
+    <p class="kicker"><i></i>Taking on new pilot projects</p>
+    <h1>An AI workforce you can actually <span class="grad">watch work.</span></h1>
+    <p class="lead">Northlight Agents designs, builds and runs teams of AI agents for businesses: research, lead generation, content, fact-checking and everyday operations. Every agent keeps a readable log, and nothing goes out without your approval.</p>
+    <div class="cta"><a class="btn" href="contact.html">Book a discovery call <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="btn ghost" href="office.html">Watch the agents work</a></div>
+    <p>Free 30 minute call. We tell you honestly if an agent is the right fit.</p>
+  </div></div>
+</section>
+<div class="ticker" aria-label="Agents connect to the tools you already use"><div class="track"><span>Email</span><span>WhatsApp</span><span>Slack</span><span>Google Workspace</span><span>Microsoft 365</span><span>Notion</span><span>HubSpot</span><span>Shopify</span><span>Airtable</span><span>Your own database</span><span>Your website</span><span>Email</span><span>WhatsApp</span><span>Slack</span><span>Google Workspace</span><span>Microsoft 365</span><span>Notion</span><span>HubSpot</span><span>Shopify</span><span>Airtable</span><span>Your own database</span><span>Your website</span></div></div>
 
-<section id="what">
-  <h2 class="s">What your agents can take on</h2>
-  <p class="sub">Each agent has one clear job, its own tools and a log of everything it did. We start with the work that eats the most of your team's time.</p>
-  <div class="grid">
-    <div class="card"><div class="sw" style="background:var(--c3)"></div><h3>Lead generation</h3><p>Find companies that fit your ideal customer, score them, and prepare personal outreach drafts for your approval.</p></div>
-    <div class="card"><div class="sw" style="background:var(--c1)"></div><h3>Research and fact-checking</h3><p>Market scans, competitor briefs and source checks, with links to every claim so you can verify it yourself.</p></div>
-    <div class="card"><div class="sw" style="background:var(--c2)"></div><h3>Content and social</h3><p>Articles, newsletters and posts written in your voice, edited for search, and checked before they go out.</p></div>
-    <div class="card"><div class="sw" style="background:var(--c4)"></div><h3>Operations and support</h3><p>Inbox triage, scheduling, booking and customer questions answered on WhatsApp, email or your website.</p></div>
-  </div>
+<section class="w">
+  <div class="head rv"><h2>Six jobs we hand to agents.</h2><p class="lead">Each agent has one clear role, its own tools and its own log. Together they behave like a small team that never forgets a task.</p></div>
+  <div class="rows"><a class="row rv" style="--c:#5FE0F0" href="services.html#research"><h3><i></i>Research</h3><p>Market scans, competitor briefs and summaries of long documents, with a link behind every claim.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="row rv" style="--c:#8E7BFF" href="services.html#leads"><h3><i></i>Lead generation</h3><p>Finds companies that fit your ideal customer, scores them, and drafts personal outreach for you to approve.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="row rv" style="--c:#FFC25E" href="services.html#content"><h3><i></i>Content and social</h3><p>Articles, newsletters and posts in your voice, edited for search and checked before they go out.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="row rv" style="--c:#6EF0B0" href="services.html#checking"><h3><i></i>Fact-checking</h3><p>Reads a draft, checks each claim against sources, and flags what it cannot confirm.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="row rv" style="--c:#7AA7FF" href="services.html#assistants"><h3><i></i>Personal assistants</h3><p>Inbox triage, scheduling, reminders and follow-ups, prepared for one person or a whole team.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="row rv" style="--c:#FF8FA3" href="services.html#ops"><h3><i></i>Operations and support</h3><p>Answers customer questions on WhatsApp, email or your website, and hands the hard ones to a person.</p><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a></div>
 </section>
 
-<section>
-  <h2 class="s">How we work with you</h2>
-  <p class="sub">Small start, clear results, then more agents once the first ones prove themselves.</p>
-  <div class="steps">
-    <div><h3>1. Find the task</h3><p>We map your week and pick one repeatable job that is costing you hours.</p></div>
-    <div><h3>2. Build the agent</h3><p>We build it with your tools and data, and test it on real examples.</p></div>
-    <div><h3>3. Review together</h3><p>You approve outputs at first. Agents never send anything on your behalf without your sign-off.</p></div>
-    <div><h3>4. Add more agents</h3><p>Once it works, we add teammates: researcher, writer, checker, outreach.</p></div>
-  </div>
-</section>
-
-<section>
-  <div class="two">
-    <div>
-      <h2 class="s">You can see the work</h2>
-      <p class="sub">Every agent keeps a plain-language log: what it searched, what it read, what it produced and who it handed it to. Ask any agent what it did and you get the full answer.</p>
+<section class="rule">
+  <div class="w split">
+    <div class="rv">
+      <h2>Built so you can trust it.</h2>
+      <p class="lead">Handing work to software only makes sense if you stay in control. So control is the first thing we design, not the last.</p>
+      <div class="points">
+        <div><h3>You approve what leaves</h3><p>Emails, posts and replies wait for your sign-off. Agents prepare, people decide.</p></div>
+        <div><h3>A log for every agent</h3><p>What it read, what it decided, what it produced, who it handed it to. In plain language.</p></div>
+        <div><h3>Sources for every claim</h3><p>Research and facts come with links, so you can verify them yourself in seconds.</p></div>
+        <div><h3>Access you can take back</h3><p>Agents only touch the accounts you connect, with the minimum permissions needed, and you can revoke them at any time.</p></div>
+      </div>
     </div>
-    <ul class="list">
-      <li>Full activity log per agent</li>
-      <li>Human approval before anything is sent or published</li>
-      <li>Sources attached to research and facts</li>
-      <li>Contact rules built in for GDPR and local marketing law</li>
-      <li>Start with one agent, scale when it pays off</li>
-    </ul>
+    <div class="term rv" role="img" aria-label="Sample activity log showing agents handing work to each other">
+      <header><i></i><i></i><i></i><span>Agent activity, sample</span></header>
+      <ol id="log" aria-hidden="true"></ol>
+    </div>
   </div>
 </section>
 
-<section class="close" id="contact">
-  <h2>Tell us what you want to hand off.</h2>
-  <p>Describe one task that takes too much of your team's time. We will tell you honestly whether an agent can do it and what it would take.</p>
-  <a class="btn" href="https://pranavarya.com" rel="noopener">Get in touch</a>
+<section class="rule">
+  <div class="w split">
+    <div class="device rv"><a class="frame" data-tilt="6" href="office.html" aria-label="Open the live agent office demo"><img src="office-preview.jpg" width="1200" height="800" alt="Top-down view of the Agent Office demo: a team of AI agents working at desks" loading="lazy"></a></div>
+    <div class="rv">
+      <h2>Step into the Agent Office.</h2>
+      <p class="lead">A top-down view of an AI team at work: researchers, writers, fact-checkers and lead scouts handing tasks to each other, taking breaks, and logging every move.</p>
+      <p class="muted">The demo is simulated for now. It shows how we present agent work to clients, and it is the dashboard we are connecting to real agents.</p>
+      <div class="cta" style="margin-top:26px"><a class="btn" href="office.html">Open the live demo <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a></div>
+    </div>
+  </div>
 </section>
 
-<footer><span>Kestrel Agents, Berlin</span><span>Built by Pranav Arya</span></footer>
-</div>
+<section class="rule">
+  <div class="w">
+    <div class="head rv"><h2>How a project runs.</h2><p class="lead">Small start, clear results, then more agents once the first one has proven itself.</p></div>
+    <ol class="steps">
+      <li class="rv"><h3>Discovery call</h3><p>30 minutes, free. We look at your week and pick one repeatable task that costs you hours.</p></li>
+      <li class="rv"><h3>Pilot scope</h3><p>We write down what the agent will do, which tools it can use, what a good result looks like, and who approves. Scope and price are agreed in writing before work starts.</p></li>
+      <li class="rv"><h3>Build and test</h3><p>We build the agent with your tools and test it on real examples from your business.</p></li>
+      <li class="rv"><h3>Run and review</h3><p>You read the logs and approve outputs. We tune the agent until you trust it with that task.</p></li>
+      <li class="rv"><h3>Add teammates</h3><p>Once one agent works, we add the next: researcher, writer, checker, outreach.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="rule">
+  <div class="w">
+    <div class="head rv" style="display:flex;justify-content:space-between;align-items:end;gap:20px;max-width:none;flex-wrap:wrap"><div><h2>From the blog.</h2><p class="lead" style="margin:0">Practical notes, no hype.</p></div><a class="btn ghost small" href="blog.html">All articles</a></div>
+    <div class="cards"><a class="card rv" style="--c:#5FE0F0" href="blog-what-is-an-ai-agent.html"><time datetime="2026-10-25">25 October 2026</time><h3 style="margin-top:12px">What an AI agent is, and what it is not</h3><p>A plain definition of an AI agent, how it differs from a chatbot or a script, and the kinds of work it suits.</p></a><a class="card rv" style="--c:#5FE0F0" href="blog-before-you-automate.html"><time datetime="2026-10-25">25 October 2026</time><h3 style="margin-top:12px">Five questions to ask before you automate a business process</h3><p>A short checklist to decide whether a task is a good fit for an AI agent, before you spend any money.</p></a><a class="card rv" style="--c:#5FE0F0" href="blog-agents-should-keep-a-log.html"><time datetime="2026-10-25">25 October 2026</time><h3 style="margin-top:12px">Why every AI agent should keep a log you can read</h3><p>Why transparency matters when AI agents do real work for your business, and what a good activity log contains.</p></a></div>
+  </div>
+</section>
+<section class="w"><div class="cta-band rv">
+  <h2>Tell us what you want to hand off.</h2>
+  <p>Describe one task that takes too much of your team's time. On a 30 minute call we will tell you honestly whether an agent can do it, and what it would take.</p>
+  <div class="cta"><a class="btn" href="contact.html">Book a discovery call <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="btn ghost" href="office.html">Watch the agents work</a></div>
+</div></section>
+
+</main>
+<footer class="site-foot"><div class="w">
+  <div class="foot-grid">
+    <div><a class="brand" href="index.html"><svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="lgb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5FE0F0"/><stop offset="1" stop-color="#8E7BFF"/></linearGradient></defs><circle cx="16" cy="16" r="13" fill="none" stroke="url(#lgb)" stroke-width="1.6"/><path d="M16 5.5l2.1 8.4 8.4 2.1-8.4 2.1-2.1 8.4-2.1-8.4-8.4-2.1 8.4-2.1z" fill="url(#lgb)"/></svg>Northlight <span>Agents</span></a>
+      <p style="margin-top:16px">We design, build and run teams of AI agents for businesses. Every agent keeps a log you can read, and nothing is sent without your approval.</p></div>
+    <div><h4>Company</h4><a href="about.html">About</a><a href="blog.html">Blog</a><a href="contact.html">Contact</a></div>
+    <div><h4>Services</h4><a href="services.html#research">Research</a><a href="services.html#leads">Lead generation</a><a href="services.html#content">Content</a><a href="services.html#ops">Operations</a></div>
+    <div><h4>Explore</h4><a href="office.html">Live demo</a><a href="privacy.html">Privacy</a><a href="mailto:hello@northlightagents.com">hello@northlightagents.com</a></div>
+  </div>
+  <div class="legal"><span>&copy; <span id="yr">2026</span> Northlight Agents. Operated by Pranav Arya.</span><span>Working with teams worldwide, remotely.</span></div>
+</div></footer>
+<script src="three.min.js" defer></script><script src="hero3d.js" defer></script><script src="main.js" defer></script>
 </body>
 </html>
