@@ -21,43 +21,101 @@
     rv.forEach(function (n) { io.observe(n); });
   } else rv.forEach(function (n) { n.classList.add('on'); });
 
-  /* 3D tilt on pointer devices */
-  if (!reduce && window.matchMedia('(hover:hover)').matches) {
-    document.querySelectorAll('[data-tilt]').forEach(function (el) {
-      var max = parseFloat(el.getAttribute('data-tilt')) || 8, base = el.classList.contains('frame') ? 'rotateY(-9deg) rotateX(4deg)' : '';
-      el.addEventListener('pointermove', function (e) {
-        var r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
-        el.style.transform = 'rotateY(' + (x * max * 2) + 'deg) rotateX(' + (-y * max * 2) + 'deg) translateZ(0)';
-      });
-      el.addEventListener('pointerleave', function () { el.style.transform = base; });
-    });
-  }
-
-  /* sample activity log */
-  var log = document.getElementById('log');
-  if (log) {
-    var lines = [
-      ['09:02', 'Research', '#1B8FA6', 'Reading 14 sources on warehouse automation in Poland.'],
-      ['09:06', 'Research', '#1B8FA6', 'Brief ready with 11 claims and links. Handed to Fact-checker.'],
-      ['09:07', 'Fact-checker', '#1E9E6B', '10 of 11 claims confirmed. 1 flagged: the source is from 2019.'],
-      ['09:12', 'Writer', '#C98A12', 'Draft updated. The flagged claim is removed.'],
-      ['09:13', 'Lead scout', '#6B5BD6', 'Found 9 companies that match your profile. 6 have a named contact.'],
-      ['09:15', 'Assistant', '#3B6FD8', 'Prepared 6 outreach drafts. None sent.'],
-      ['09:15', 'Needs you', '#C98A12', 'Approve the article and the 6 drafts before anything goes out.', true]
+  /* interactive task simulator (clearly labelled as simulated) */
+  var sim = document.getElementById('sim');
+  if (sim) {
+    var A = {
+      scout: ['Scout', '#6B5BD6'], research: ['Research', '#1B8FA6'], writer: ['Writer', '#C98A12'], check: ['Checker', '#1E9E6B'],
+      strategy: ['Strategy', '#3B6FD8'], video: ['Video', '#E07A2E'], publish: ['Publisher', '#D1566B']
+    };
+    var S = [
+      { label: 'Find leads', agents: ['scout', 'research', 'writer'], steps: [
+        ['scout', 'Searching for companies that match your profile.', 1500],
+        ['scout', 'Found 9 matches. 6 have a named decision maker.', 1700],
+        ['research', 'Reading each company site for a reason to reach out.', 1700],
+        ['writer', 'Drafting 6 personal messages. None are sent.', 1700]],
+        res: ['6 outreach drafts are ready for you', 'Review the list and the messages. Nothing is sent until you approve.'] },
+      { label: 'Research a market', agents: ['research', 'check', 'writer'], steps: [
+        ['research', 'Reading 14 sources on warehouse automation in Poland.', 1500],
+        ['research', 'Brief ready with 11 claims and a link behind each.', 1700],
+        ['check', '10 of 11 claims confirmed. 1 flagged: the source is from 2019.', 1800],
+        ['writer', 'Removed the flagged claim and finished the summary.', 1600]],
+        res: ['A sourced market brief is ready', 'Every claim links to its source. One outdated claim was removed.'] },
+      { label: 'Write an article', agents: ['strategy', 'writer', 'check'], steps: [
+        ['strategy', 'Picked a topic from your customers’ most common questions.', 1500],
+        ['writer', 'Drafted 900 words in your brand voice.', 1700],
+        ['check', 'Checked 8 claims against sources. All confirmed.', 1700],
+        ['check', 'Added a headline and search description.', 1400]],
+        res: ['Article draft is ready to publish', 'Read it, change anything you like, then approve it for publishing.'] },
+      { label: 'Run the content machine', agents: ['strategy', 'writer', 'video', 'publish'], steps: [
+        ['strategy', 'Found 5 topics trending in your niche today.', 1500],
+        ['writer', 'Wrote 5 short video scripts in your style.', 1500],
+        ['video', 'Generating 5 videos. 3 of 5 are rendered.', 1700],
+        ['publish', 'Scheduled posts across Instagram, TikTok and Shorts.', 1600]],
+        res: ['14 videos are queued for this week', 'Approve the batch, or set rules so approved formats publish on their own, 24 hours a day.'] }
     ];
-    var i = 0;
-    function add() {
-      if (log.children.length >= 7) log.removeChild(log.firstChild);
-      var l = lines[i % lines.length], li = document.createElement('li');
-      if (l[4]) li.className = 'ask';
-      li.style.setProperty('--c', l[2]);
-      var t = document.createElement('time'); t.textContent = l[0];
+    var chips = sim.querySelector('.chips'), flow = document.getElementById('flow'), log = document.getElementById('log'), result = document.getElementById('result');
+    var timers = [], cur = 0, auto = true;
+    S.forEach(function (sc, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = sc.label; b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', function () { auto = false; run(i); });
+      chips.appendChild(b);
+    });
+    function clearT() { timers.forEach(clearTimeout); timers = []; }
+    function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+    function stamp(n) { var m = 2 + n * 3; return '09:' + (m < 10 ? '0' : '') + m; }
+    function addLine(key, text, n, ask) {
+      if (log.children.length >= 5) log.removeChild(log.firstChild);
+      var li = document.createElement('li'); if (ask) li.className = 'ask';
+      li.style.setProperty('--c', A[key] ? A[key][1] : '#101318');
+      var t = document.createElement('time'); t.textContent = stamp(n);
       var s = document.createElement('span'), b = document.createElement('b');
-      b.textContent = l[1] + ': '; s.appendChild(b); s.appendChild(document.createTextNode(l[3]));
-      li.appendChild(t); li.appendChild(s); log.appendChild(li); i++;
+      b.textContent = (A[key] ? A[key][0] : 'Needs you') + ': '; s.appendChild(b); s.appendChild(document.createTextNode(text));
+      li.appendChild(t); li.appendChild(s); log.appendChild(li);
     }
-    if (reduce) { for (var k = 0; k < lines.length; k++) add(); }
-    else { add(); setInterval(function () { if (!document.hidden) add(); }, 1900); }
+    function setNodes(sc, activeIdx, allDone) {
+      Array.prototype.forEach.call(flow.children, function (n, i) {
+        n.classList.toggle('done', allDone ? i < flow.children.length - 1 || false : i < activeIdx);
+        n.classList.toggle('on', !allDone && i === activeIdx || (allDone && i === flow.children.length - 1));
+      });
+    }
+    function showResult(sc) {
+      result.hidden = false; result.textContent = '';
+      var st = document.createElement('strong'); st.textContent = sc.res[0];
+      var p = document.createElement('p'); p.textContent = sc.res[1];
+      var acts = document.createElement('div'); acts.className = 'acts';
+      var ok = document.createElement('button'); ok.type = 'button'; ok.textContent = 'Approve';
+      var no = document.createElement('button'); no.type = 'button'; no.className = 'alt'; no.textContent = 'Ask for changes';
+      function done(msg) { auto = false; clearT(); acts.remove(); var m = document.createElement('p'); m.className = 'done-msg'; m.textContent = msg; result.appendChild(m); }
+      ok.addEventListener('click', function () { done('Approved. In this demo nothing is actually sent.'); });
+      no.addEventListener('click', function () { done('Noted. The agents would revise and send it back to you.'); });
+      acts.appendChild(ok); acts.appendChild(no); result.appendChild(st); result.appendChild(p); result.appendChild(acts);
+    }
+    function run(i) {
+      clearT(); cur = i; var sc = S[i];
+      Array.prototype.forEach.call(chips.children, function (b, k) { b.setAttribute('aria-pressed', k === i ? 'true' : 'false'); });
+      flow.textContent = ''; log.textContent = ''; result.hidden = true;
+      sc.agents.forEach(function (k) {
+        var n = document.createElement('div'); n.className = 'node'; n.style.setProperty('--c', A[k][1]);
+        var c = document.createElement('i'); c.textContent = A[k][0].charAt(0);
+        n.appendChild(c); n.appendChild(document.createTextNode(A[k][0])); flow.appendChild(n);
+      });
+      var y = document.createElement('div'); y.className = 'node you'; y.style.setProperty('--c', '#101318');
+      var yc = document.createElement('i'); yc.textContent = 'You'; yc.style.fontSize = '11px'; y.appendChild(yc); y.appendChild(document.createTextNode('Approve')); flow.appendChild(y);
+      if (reduce) {
+        sc.steps.forEach(function (st, n) { addLine(st[0], st[1], n); });
+        setNodes(sc, 0, true); showResult(sc); return;
+      }
+      var t = 300;
+      sc.steps.forEach(function (st, n) {
+        var idx = sc.agents.indexOf(st[0]);
+        later(function () { setNodes(sc, idx, false); addLine(st[0], st[1], n); }, t);
+        t += st[2];
+      });
+      later(function () { setNodes(sc, 0, true); addLine('you', 'Waiting for your approval before anything goes out.', sc.steps.length, true); showResult(sc); }, t);
+      if (auto) later(function () { if (auto) run((cur + 1) % S.length); }, t + 6500);
+    }
+    run(0);
   }
 
   /* contact form: opens the visitor's email app with the message filled in */
