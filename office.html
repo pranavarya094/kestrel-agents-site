@@ -3,6 +3,8 @@
 <meta name="description" content="A simulated top-down view of an AI agent team at work: researchers, writers, fact-checkers and lead scouts handing tasks to each other.">
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
+@font-face{font-family:Inter;font-weight:100 900;font-display:swap;src:url(inter.woff2) format("woff2")}
+h1{letter-spacing:-.02em!important}
 /* Layout: header with live totals, a control bar, then the office floor (canvas) beside a side column
    (selected employee, team list, live feed). Everything stacks to one column on phones. */
 :root{
@@ -11,8 +13,8 @@
   --floor-a:#D8DCE1; --floor-b:#CFD4DA; --wall:#8E9AA8; --wall-dark:#6F7B89; --frame:#EEF1F4; --sky:#B9D6EC; --board:#F7F8FA;
   --desk:#BE9262; --desk-edge:#946B43; --chair:#46505C; --chair-dark:#2F3741; --kb:#3B444E; --mon:#1B2129;
   --tag:rgba(255,255,255,.9);
-  --f-display:'Pixelify Sans',ui-monospace,Menlo,monospace;
-  --f-body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-display:Inter,system-ui,sans-serif;
+  --f-body:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;
   --f-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){
@@ -119,7 +121,7 @@ h2{font:600 11px/1 var(--f-body);letter-spacing:.09em;text-transform:uppercase;c
   <header class="top">
     <div>
       <h1>Agent Office</h1>
-      <p class="demo"><span class="live" id="liveDot"></span><span id="modeText">Demo mode: no API connected, all activity is simulated</span></p>
+      <p style="margin:0 0 8px;color:var(--ink-2);max-width:62ch">Each desk is an agent. Click one to see what it is doing, what it has finished and who it hands work to. Everything here is simulated for now.</p><p class="demo"><span class="live" id="liveDot"></span><span id="modeText">Demo mode: no API connected, all activity is simulated</span></p>
     </div>
     <dl class="stats" aria-label="Simulated totals">
       <div><dt>Leads qualified</dt><dd id="s-leads">0</dd></div>
@@ -214,7 +216,7 @@ const cv=$('#cv'), ctx=cv.getContext('2d');
 const wc=document.createElement('canvas'); wc.width=W; wc.height=H; const wx=wc.getContext('2d');
 const bgc=document.createElement('canvas'); bgc.width=W; bgc.height=H; const bx=bgc.getContext('2d');
 let K=2, U=1, cssW=W;
-const BODY='"IBM Plex Sans",system-ui,sans-serif', DISPLAY='"Pixelify Sans",ui-monospace,monospace';
+const BODY='Inter,system-ui,sans-serif', DISPLAY='Inter,system-ui,sans-serif';
 
 function rect(g,x,y,w,h,c){g.fillStyle=c;g.fillRect(x,y,w,h);}
 function disc(g,cx,cy,r,c){g.fillStyle=c;for(let dy=-r;dy<=r;dy++){const w=Math.floor(Math.sqrt(r*r+r*0.8-dy*dy));g.fillRect(cx-w,cy+dy,2*w+1,1);}}

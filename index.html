@@ -31,24 +31,51 @@
 <main id="main">
 
 <section class="hero" aria-label="Introduction">
+  <div class="hero-bg" aria-hidden="true"><i></i><i></i></div>
   <div class="w">
-  <div>
+  <div class="hero-copy">
     <p class="kicker"><i></i>Taking on new pilot projects</p>
     <h1>An AI workforce you can actually watch work.</h1>
     <p class="lead">Northlight Agents designs, builds and runs teams of AI agents for businesses: research, lead generation, a content machine that runs 24/7, fact-checking and everyday operations. Every agent keeps a readable log, and nothing goes out without your approval.</p>
-    <div class="cta"><a class="btn" href="contact.html">Book a discovery call <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="btn ghost" href="office.html">Watch the agents work</a></div>
+    <div class="cta"><a class="btn light" href="contact.html">Book a discovery call <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a><a class="btn ghost-light" href="office.html">Watch the agents work</a></div>
     <p class="note">Free 30 minute call. We tell you honestly if an agent is the right fit.</p>
   </div>
-  <div class="panel sim" id="sim">
-    <header>Give the team a task <em>Simulated example</em></header>
-    <div class="chips" role="group" aria-label="Choose a task"></div>
-    <div class="flow" id="flow" aria-hidden="true"></div>
-    <ol id="log" aria-live="polite"></ol>
-    <div class="result" id="result" hidden></div>
+  <div class="scene" id="scene" role="img" aria-label="Animated illustration: a research agent, a writer, a fact-checker, a video agent and a publisher pass work to each other">
+    <article class="ac" style="--c:#7DD3FC"><header><span class="dot"></span><b>Research</b><em class="st">Idle</em></header>
+      <div class="bd"><p class="src">Industry report</p><p class="src">Company filing</p><p class="src">News article</p></div>
+      <footer>Sources read <strong data-n="14">0</strong></footer></article>
+    <article class="ac" style="--c:#FDE68A"><header><span class="dot"></span><b>Writer</b><em class="st">Idle</em></header>
+      <div class="bd"><div class="lines"><i style="--w:92%"></i><i style="--w:76%"></i><i style="--w:86%"></i><i style="--w:48%"></i></div></div>
+      <footer>Draft <strong data-n="640" data-suffix=" words">0</strong></footer></article>
+    <article class="ac" style="--c:#86EFAC"><header><span class="dot"></span><b>Fact-checker</b><em class="st">Idle</em></header>
+      <div class="bd"><p class="cl"><span class="tick"></span>Market size</p><p class="cl"><span class="tick"></span>Growth rate</p><p class="cl"><span class="tick"></span>Source dates</p></div>
+      <footer>Claims confirmed <strong data-n="11">0</strong></footer></article>
+    <article class="ac" style="--c:#FDBA74"><header><span class="dot"></span><b>Video</b><em class="st">Idle</em></header>
+      <div class="bd"><div class="vid"><div class="fr"></div><div class="pb"><u></u></div></div></div>
+      <footer>Rendering <strong data-n="100" data-suffix="%">0</strong></footer></article>
+    <article class="ac wide" style="--c:#F9A8D4"><header><span class="dot"></span><b>Publisher</b><em class="st">Idle</em></header>
+      <div class="bd chips2"><p class="chip"><span>Instagram</span><em>18:00</em></p><p class="chip"><span>TikTok</span><em>20:00</em></p><p class="chip"><span>Shorts</span><em>22:00</em></p></div></article>
+    <span class="packet" aria-hidden="true"></span>
   </div>
   </div>
 </section>
 <div class="connects"><p><strong>Works with the tools you already use:</strong> email, WhatsApp, Slack, Google Workspace, Microsoft 365, Notion, HubSpot, Shopify and your own database.</p></div>
+
+<section class="w">
+  <div class="split">
+    <div class="rv">
+      <h2>Give the team a task.</h2>
+      <p class="lead">Pick one and watch how the agents split the work, hand it on, and stop at your approval. This is a simulated example, but it is exactly how a real project is run.</p>
+    </div>
+    <div class="panel sim rv" id="sim">
+      <header>Give the team a task <em>Simulated example</em></header>
+      <div class="chips" role="group" aria-label="Choose a task"></div>
+      <div class="flow" id="flow" aria-hidden="true"></div>
+      <ol id="log" aria-live="polite"></ol>
+      <div class="result" id="result" hidden></div>
+    </div>
+  </div>
+</section>
 
 <section class="w">
   <div class="head rv"><h2>Seven jobs we hand to agents.</h2><p class="lead">Each agent has one clear role, its own tools and its own log. Together they behave like a small team that never forgets a task.</p></div>
@@ -80,6 +107,22 @@
       <p class="lead">A top-down view of an AI team at work: researchers, writers, fact-checkers and lead scouts handing tasks to each other, taking breaks, and logging every move.</p>
       <p class="muted">The demo is simulated for now. It shows how we present agent work to clients, and it is the dashboard we are connecting to real agents.</p>
       <div class="cta" style="margin-top:26px"><a class="btn" href="office.html">Open the live demo <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a></div>
+    </div>
+  </div>
+</section>
+
+<section class="rule">
+  <div class="w">
+    <div class="head rv"><p class="kicker">Illustrative example, not a real client</p><h2>What a first pilot could look like.</h2><p class="lead">A realistic scenario, so you can see how scope, review and measurement are set out before we start anything.</p></div>
+    <div class="pilot rv">
+      <div class="pilot-head"><strong>Weekly lead list for a small B2B software company</strong><span>Example scenario</span></div>
+      <dl>
+        <div><dt>The task</dt><dd>Every Monday, a list of 20 companies that match the ideal customer, each with a named contact and a one-line reason to reach out.</dd></div>
+        <div><dt>Agents involved</dt><dd>A lead scout finds companies, a researcher reads each website, a writer drafts the first message, and a checker verifies contact details and claims.</dd></div>
+        <div><dt>What you review</dt><dd>The list and the drafts, before anything is sent. You approve, edit or reject each one.</dd></div>
+        <div><dt>How we measure it</dt><dd>Hours saved per week, the share of leads you would actually contact, and replies to the messages you chose to send. Targets are agreed in writing before we start.</dd></div>
+        <div><dt>How it starts</dt><dd>Scope is agreed on the discovery call, followed by a short build and test period using your real examples.</dd></div>
+      </dl>
     </div>
   </div>
 </section>

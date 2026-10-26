@@ -21,6 +21,39 @@
     rv.forEach(function (n) { io.observe(n); });
   } else rv.forEach(function (n) { n.classList.add('on'); });
 
+
+  /* hero scene: agents work in turn and hand a packet to the next one */
+  var scene = document.getElementById('scene');
+  if (scene) {
+    var cards = Array.prototype.slice.call(scene.querySelectorAll('.ac')), packet = scene.querySelector('.packet'), tm = [];
+    function ctr(el) { var r = el.getBoundingClientRect(), s = scene.getBoundingClientRect(); return [r.left - s.left + r.width / 2, r.top - s.top + r.height / 2]; }
+    function setSt(c, txt) { var e = c.querySelector('.st'); if (e) e.textContent = txt; }
+    function num(c, dur, instant) {
+      var n = c.querySelector('[data-n]'); if (!n) return;
+      var to = +n.getAttribute('data-n'), suf = n.getAttribute('data-suffix') || '';
+      if (instant || reduce) { n.textContent = to + suf; return; }
+      var t0 = null; (function f(t) { if (t0 === null) t0 = t; var p = Math.min((t - t0) / dur, 1); n.textContent = Math.round(to * p) + suf; if (p < 1) requestAnimationFrame(f); })(performance.now());
+    }
+    function resetAll() { cards.forEach(function (c) { c.classList.remove('run', 'active', 'done'); setSt(c, 'Idle'); var n = c.querySelector('[data-n]'); if (n) n.textContent = '0' + (n.getAttribute('data-suffix') || ''); }); packet.style.opacity = 0; }
+    function later2(fn, ms) { tm.push(setTimeout(fn, ms)); }
+    function step(i) {
+      if (i >= cards.length) { cards.forEach(function (c) { c.classList.remove('active'); }); later2(function () { resetAll(); later2(function () { step(0); }, 900); }, 3400); return; }
+      var c = cards[i]; c.classList.add('run', 'active'); setSt(c, 'Working'); num(c, 2200);
+      later2(function () {
+        c.classList.remove('active'); c.classList.add('done'); setSt(c, 'Done');
+        if (i + 1 < cards.length) {
+          var a = ctr(c), b = ctr(cards[i + 1]);
+          packet.style.transition = 'none'; packet.style.transform = 'translate(' + a[0] + 'px,' + a[1] + 'px)'; packet.style.opacity = 1;
+          void packet.offsetWidth; packet.style.transition = '';
+          packet.style.transform = 'translate(' + b[0] + 'px,' + b[1] + 'px)';
+          later2(function () { packet.style.opacity = 0; step(i + 1); }, 800);
+        } else step(i + 1);
+      }, 2500);
+    }
+    if (reduce) { cards.forEach(function (c) { c.classList.add('run', 'done'); setSt(c, 'Done'); num(c, 0, true); }); }
+    else { resetAll(); later2(function () { step(0); }, 600); }
+  }
+
   /* interactive task simulator (clearly labelled as simulated) */
   var sim = document.getElementById('sim');
   if (sim) {
