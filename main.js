@@ -21,6 +21,12 @@
     }, { threshold: 0, rootMargin: '0px 0px -20px 0px' });
     rv.forEach(function (n) { io.observe(n); });
   } else rv.forEach(function (n) { n.classList.add('on'); });
+  /* safety net: anything the visitor has already scrolled past is always shown */
+  var tick = false;
+  window.addEventListener('scroll', function () {
+    if (tick) return; tick = true;
+    requestAnimationFrame(function () { tick = false; rv.forEach(function (n) { if (!n.classList.contains('on') && n.getBoundingClientRect().top < window.innerHeight) n.classList.add('on'); }); });
+  }, { passive: true });
 
 
   /* hero scene: agents work in turn and hand a packet to the next one */
