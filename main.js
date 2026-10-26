@@ -2,14 +2,15 @@
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var CONTACT = 'hello@northlightagents.com';
 
-  /* mobile menu */
+  /* mobile menu: animated open/close */
   var btn = document.querySelector('.menu'), nav = document.getElementById('nav');
   if (btn && nav) {
-    btn.addEventListener('click', function () {
-      var open = nav.classList.toggle('open');
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
-    nav.addEventListener('click', function (e) { if (e.target.tagName === 'A') { nav.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); } });
+    function setMenu(open) { nav.classList.toggle('open', open); btn.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+    btn.addEventListener('click', function (e) { e.stopPropagation(); setMenu(!nav.classList.contains('open')); });
+    nav.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
+    document.addEventListener('click', function (e) { if (!nav.contains(e.target) && !btn.contains(e.target)) setMenu(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
+    window.addEventListener('resize', function () { if (window.innerWidth > 860) setMenu(false); });
   }
 
   /* gentle reveal */
