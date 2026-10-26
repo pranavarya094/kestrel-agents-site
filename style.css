@@ -396,3 +396,9 @@ h1,h2,h3{letter-spacing:-.05em}h1,h2{font-weight:500}.btn{border-radius:8px;padd
 @media(max-width:860px){.site .w{min-height:70px}.brand{font-size:12px}.brand svg{width:33px;height:33px}.northlight-manifesto .manifesto-grid{grid-template-columns:1fr}.hero:before{inset:0}}
 @media(max-width:560px){.w{width:min(100% - 32px,1180px)}.hero{padding-block:65px 70px}.hero h1{font-size:clamp(44px,12vw,64px)}.scene{padding:12px;gap:8px}.ac{padding:11px}.brand{letter-spacing:.1em}.brand span{letter-spacing:.18em}}
 @media(prefers-reduced-motion:reduce){.hero:before,.hero-copy,.scene{animation:none!important}.rv{transform:none!important}.card:hover,a.card:hover,.row:hover,.btn:hover{transform:none}}
+
+/* Restore original Northlight compass brand treatment. */
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:600 18px/1 var(--f);letter-spacing:-.02em;text-transform:none}
+.brand svg{width:26px;height:26px;flex:none;color:var(--ink)}
+.brand span{font-weight:400;color:var(--mute);letter-spacing:inherit}
+@media(max-width:440px){.brand{font-size:16px;gap:8px}.brand svg{width:24px;height:24px}}
