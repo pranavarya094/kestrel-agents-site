@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self' https://ipapi.co https://discord.com; base-uri 'self'; form-action 'self' mailto:; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self' https://ipapi.co https://discord.com https://formsubmit.co; base-uri 'self'; form-action 'self' mailto:; object-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#F7F7F2">
 <title>Contact | Northlight Agents</title>
@@ -34,16 +34,16 @@
 
 <section class="w phead"><h1>Tell us what to hand off.</h1><p class="lead">A short description is enough. We reply with an honest view on whether an agent fits, and what a pilot would involve.</p></section>
 <section class="w" style="padding-top:10px"><div class="contact-grid">
-<form class="contact rv" id="contact-form" action="mailto:hello@northlightagents.com" method="post" enctype="text/plain">
+<form class="contact rv" id="contact-form" action="https://formsubmit.co/hello@northlightagents.com" method="post">
   <div class="f2"><label>Your name<input name="name" type="text" required autocomplete="name"></label>
   <label>Work email<input name="email" type="email" required autocomplete="email"></label></div>
   <div class="f2"><label>Company<input name="company" type="text" autocomplete="organization"></label>
   <label>Team size<select name="size"><option>Just me</option><option>2 to 10</option><option>11 to 50</option><option>51 to 250</option><option>250+</option></select></label></div>
-  <label>What would you like to hand off?<small>Describe the task and roughly how much time it takes each week.</small><textarea name="message" required></textarea></label>
+  <label>Tell us in short what type of automation do you need.<textarea name="message" required></textarea></label>
   <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-  <button class="btn" type="submit">Prepare my message <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></button>
+  <button class="btn" type="submit">Send message <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5"/></svg></button>
   <p class="status" id="form-status" role="status"></p>
-  <p class="form-note">This opens your email app with the message filled in, so nothing is stored on this website. Please do not include passwords or sensitive data.</p>
+  <p class="form-note">Your message goes straight to our inbox. Please do not include passwords or sensitive data.</p>
 </form>
 <div class="rv"><div class="aside-box"><h3>Email</h3><p><a href="mailto:hello@northlightagents.com" style="color:var(--accent)">hello@northlightagents.com</a></p><p>We aim to reply within two working days.</p></div>
 <div class="aside-box"><h3>What happens next</h3><p>1. We read your message and reply with a few questions.</p><p>2. We hold a free 30 minute call.</p><p>3. If an agent fits, we send a written pilot scope. If not, we tell you why.</p></div>

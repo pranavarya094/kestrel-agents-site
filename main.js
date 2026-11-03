@@ -158,19 +158,32 @@
     run(0);
   }
 
-  /* contact form: opens the visitor's email app with the message filled in */
+  /* contact form: sends the message straight to our inbox through FormSubmit (disclosed on the Privacy page) */
   var form = document.getElementById('contact-form');
   if (form) {
     var status = document.getElementById('form-status');
+    var btn = form.querySelector('button[type=submit]');
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (form.website && form.website.value) return;
       var f = form.elements;
-      var body = 'Name: ' + f.name.value + '\nCompany: ' + f.company.value + '\nEmail: ' + f.email.value +
-        '\nTeam size: ' + f.size.value + '\n\nWhat I would like to hand off:\n' + f.message.value + '\n';
-      var url = 'mailto:' + CONTACT + '?subject=' + encodeURIComponent('Discovery call request from ' + f.name.value) + '&body=' + encodeURIComponent(body);
-      status.textContent = 'Opening your email app with the message ready to send. If nothing opens, write to ' + CONTACT + '.';
-      window.location.href = url;
+      status.textContent = 'Sending...';
+      if (btn) btn.disabled = true;
+      fetch('https://formsubmit.co/ajax/' + CONTACT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          _subject: 'Discovery call request from ' + f.name.value,
+          _replyto: f.email.value,
+          _captcha: 'false',
+          _template: 'table',
+          Name: f.name.value, Email: f.email.value, Company: f.company.value,
+          'Team size': f.size.value, 'Automation needed': f.message.value
+        })
+      }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || j.success === 'false' || j.success === false) throw new Error('fail'); }); })
+        .then(function () { form.reset(); status.textContent = 'Thank you. Your message is with us and we will reply by email soon.'; })
+        .catch(function () { status.textContent = 'Sorry, that did not go through. Please write to ' + CONTACT + ' instead.'; })
+        .then(function () { if (btn) btn.disabled = false; });
     });
   }
 
