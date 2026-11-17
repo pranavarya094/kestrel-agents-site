@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ClipFlow — Automated Reel Pipeline</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold:#d4af6a;
+    --gold-bright:#f0c878;
+    --bg:#0a0a0b;
+    --panel:#121214;
+    --panel2:#17171a;
+    --line:#2a2a2e;
+    --text-dim:#8a8a8f;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg);
+    color:#eceae6;
+    font-family:'Inter',sans-serif;
+    overflow:hidden;
+  }
+  .display{font-family:'Archivo Black',sans-serif;}
+  .mono{font-family:'Space Mono',monospace;}
+
+  /* film grain */
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:50;
+    opacity:0.035; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .vignette{
+    position:fixed; inset:0; pointer-events:none; z-index:49;
+    background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%);
+  }
+  .goldtext{color:var(--gold);}
+  .gold-border{border-color:rgba(212,175,106,0.35);}
+  .panel{background:var(--panel); border:1px solid var(--line);}
+  .panel2{background:var(--panel2); border:1px solid var(--line);}
+  .glow{box-shadow:0 0 0 1px rgba(212,175,106,0.15), 0 8px 30px -10px rgba(212,175,106,0.15);}
+
+  ::-webkit-scrollbar{width:8px; height:8px;}
+  ::-webkit-scrollbar-thumb{background:#2a2a2e; border-radius:4px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+
+  .navitem{
+    display:flex; align-items:center; gap:0.65rem;
+    padding:0.6rem 0.9rem; border-radius:0.5rem;
+    color:#a9a9ad; font-size:0.82rem; font-weight:600;
+    letter-spacing:0.03em; cursor:pointer; transition:all .15s ease;
+    border:1px solid transparent;
+  }
+  .navitem:hover{ background:rgba(255,255,255,0.04); color:#f2f0ea; }
+  .navitem.active{
+    background:rgba(212,175,106,0.08);
+    border-color:rgba(212,175,106,0.3);
+    color:var(--gold-bright);
+  }
+  .navitem .ico{width:17px;height:17px;flex-shrink:0;}
+
+  .view{display:none;}
+  .view.active{display:block;}
+
+  .dropzone{
+    border:1.5px dashed rgba(212,175,106,0.35);
+    border-radius:0.9rem;
+    transition:all .18s ease;
+  }
+  .dropzone.drag{
+    border-color:var(--gold-bright);
+    background:rgba(212,175,106,0.06);
+  }
+
+  .step-dot{
+    width:28px;height:28px;border-radius:999px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:0.7rem; font-weight:700;
+    border:1.5px solid var(--line); color:var(--text-dim);
+    background:var(--panel2);
+    transition:all .3s ease;
+    flex-shrink:0;
+  }
+  .step-dot.active{ border-color:var(--gold); color:var(--bg); background:var(--gold); box-shadow:0 0 14px rgba(212,175,106,0.5);}
+  .step-dot.done{ border-color:var(--gold); color:var(--gold); background:transparent;}
+  .step-line{flex:1; height:1.5px; background:var(--line); position:relative; overflow:hidden;}
+  .step-line .fill{position:absolute; inset:0; width:0%; background:var(--gold); transition:width .5s ease;}
+
+  .badge{
+    display:inline-flex; align-items:center; gap:0.35rem;
+    padding:0.2rem 0.55rem; border-radius:999px;
+    font-size:0.68rem; font-weight:700; letter-spacing:0.02em;
+    border:1px solid var(--line);
+  }
+  .badge.ok{ color:#8de3a8; border-color:rgba(141,227,168,0.3); background:rgba(141,227,168,0.07);}
+  .badge.pending{ color:#e3c88d; border-color:rgba(227,200,141,0.3); background:rgba(227,200,141,0.07);}
+  .badge.off{ color:#6f6f74; border-color:var(--line); background:transparent;}
+
+  .clip-card{
+    background:var(--panel2); border:1px solid var(--line); border-radius:0.8rem;
+    overflow:hidden; transition:transform .15s ease, border-color .15s ease;
+  }
+  .clip-card:hover{ border-color:rgba(212,175,106,0.4); transform:translateY(-2px);}
+
+  /* workflow canvas */
+  #wfCanvas{ position:relative; min-height:640px; }
+  .node{
+    position:absolute; width:190px; padding:0.85rem 0.9rem;
+    background:var(--panel2); border:1px solid var(--line); border-radius:0.7rem;
+    cursor:pointer; transition:border-color .15s ease, box-shadow .15s ease;
+    user-select:none;
+  }
+  .node:hover{ border-color:var(--gold); box-shadow:0 0 18px -4px rgba(212,175,106,0.35);}
+  .node.disabled{ opacity:0.4; }
+  .node .ntitle{ font-size:0.78rem; font-weight:700; color:#f2f0ea; }
+  .node .nsub{ font-size:0.65rem; color:var(--text-dim); margin-top:2px; }
+  .node .nicon{
+    width:28px;height:28px;border-radius:0.4rem;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:0.5rem; font-size:0.85rem;
+  }
+  svg.wires{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+  .wire{ fill:none; stroke:var(--line); stroke-width:2; }
+  .wire.live{ stroke:var(--gold); stroke-dasharray:5 4; animation:dash 1.2s linear infinite; }
+  @keyframes dash{ to{ stroke-dashoffset:-18; } }
+
+  .toggle{
+    width:40px; height:22px; border-radius:999px; background:var(--panel2);
+    border:1px solid var(--line); position:relative; cursor:pointer; transition:background .15s;
+  }
+  .toggle .knob{
+    position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:999px;
+    background:var(--text-dim); transition:all .15s ease;
+  }
+  .toggle.on{ background:rgba(212,175,106,0.18); border-color:rgba(212,175,106,0.5);}
+  .toggle.on .knob{ left:20px; background:var(--gold-bright);}
+
+  input[type=range]{ -webkit-appearance:none; height:3px; background:var(--line); border-radius:3px; }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:14px; height:14px; border-radius:999px;
+    background:var(--gold-bright); cursor:pointer; margin-top:-5.5px;
+    box-shadow:0 0 8px rgba(212,175,106,0.6);
+  }
+
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(2px);
+    display:flex; align-items:center; justify-content:center; z-index:60;
+  }
+</style>
+</head>
+<body class="h-screen w-screen">
+<div class="grain"></div>
+<div class="vignette"></div>
+
+<div class="flex h-full w-full">
+
+  <!-- SIDEBAR -->
+  <aside class="w-[230px] flex-shrink-0 panel border-r gold-border flex flex-col">
+    <div class="px-5 pt-6 pb-5 border-b gold-border">
+      <div class="display text-lg tracking-tight leading-none">CLIP<span class="goldtext">FLOW</span></div>
+      <div class="mono text-[10px] text-[color:var(--text-dim)] mt-1 tracking-widest">PAFP AUTOMATION // v0.1</div>
+    </div>
+
+    <nav class="flex-1 px-3 py-4 space-y-1" id="navList">
+      <div class="navitem active" data-view="overview">
+        <svg class="ico" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Overview
+      </div>
+      <div class="navitem" data-view="upload">
+        <svg class="ico" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4m0 0l-4 4m4-4l4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Upload &amp; Process
+      </div>
+      <div class="navitem" data-view="clips">
+        <svg class="ico" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M8 5v4" stroke-linecap="round"/></svg>
+        Clip Library
+      </div>
+      <div class="navitem" data-view="accounts">
+        <svg class="ico" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke-linecap="round"/></svg>
+        Accounts
+      </div>
+      <div class="navitem" data-view="workflow">
+        <svg class="ico" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><circle cx="5" cy="6" r="2.3"/><circle cx="19" cy="6" r="2.3"/><circle cx="12" cy="18" r="2.3"/><path d="M7 7l10-1M7 8l4 8M17 7l-4 9" stroke-linecap="round"/></svg>
+        Workflow
+      </div>
+      <div class="navitem" data-view="settings">
+        <svg class="ico" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1.1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09c0 .68.38 1.3 1 1.55.6.25 1.37.14 1.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06c-.48.5-.59 1.27-.34 1.87.25.6.87 1 1.55 1H21a2 2 0 110 4h-.09c-.68 0-1.3.38-1.55 1z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Settings
+      </div>
+    </nav>
+
+    <div class="px-4 py-4 border-t gold-border">
+      <div class="panel2 rounded-lg p-3">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-[11px] font-semibold text-[color:var(--text-dim)]">AUTOMATION</span>
+          <div class="toggle on" id="autoToggleSidebar"><div class="knob"></div></div>
+        </div>
+        <div class="mono text-[10px] text-[color:var(--text-dim)]">2–3 posts / day</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="flex-1 overflow-y-auto">
+
+    <!-- ===== OVERVIEW ===== -->
+    <section class="view active p-8" id="view-overview">
+      <div class="flex items-end justify-between mb-7">
+        <div>
+          <h1 class="display text-2xl tracking-tight">OVERVIEW</h1>
+          <p class="text-[color:var(--text-dim)] text-sm mt-1">Cinematic footage in, posted Reels out — no manual cutting.</p>
+        </div>
+        <div class="mono text-xs text-[color:var(--text-dim)]" id="clockEl"></div>
+      </div>
+
+      <div class="grid grid-cols-4 gap-4 mb-8">
+        <div class="panel rounded-xl p-5">
+          <div class="text-[11px] text-[color:var(--text-dim)] font-semibold tracking-wide mb-2">SOURCE VIDEOS</div>
+          <div class="display text-3xl goldtext" id="statSources">0</div>
+        </div>
+        <div class="panel rounded-xl p-5">
+          <div class="text-[11px] text-[color:var(--text-dim)] font-semibold tracking-wide mb-2">CLIPS GENERATED</div>
+          <div class="display text-3xl goldtext" id="statClips">0</div>
+        </div>
+        <div class="panel rounded-xl p-5">
+          <div class="text-[11px] text-[color:var(--text-dim)] font-semibold tracking-wide mb-2">POSTED / QUEUED</div>
+          <div class="display text-3xl goldtext" id="statPosted">0</div>
+        </div>
+        <div class="panel rounded-xl p-5">
+          <div class="text-[11px] text-[color:var(--text-dim)] font-semibold tracking-wide mb-2">AVG. SCORE</div>
+          <div class="display text-3xl goldtext" id="statScore">—</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-5">
+        <div class="col-span-2 panel rounded-xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="font-semibold text-sm tracking-wide">PIPELINE STATUS</h2>
+            <span class="badge pending" id="pipelineBadge">IDLE</span>
+          </div>
+          <div class="flex items-center" id="miniSteps"></div>
+          <p class="text-xs text-[color:var(--text-dim)] mt-4 leading-relaxed">
+            Drop footage in <span class="goldtext font-medium">Upload &amp; Process</span> to run it through scene
+            detection, visual scoring, 9:16 crop + color grade, then queue for posting.
+          </p>
+        </div>
+        <div class="panel rounded-xl p-6">
+          <h2 class="font-semibold text-sm tracking-wide mb-4">CONNECTED ACCOUNTS</h2>
+          <div class="space-y-3" id="overviewAccounts"></div>
+        </div>
+      </div>
+
+      <div class="panel rounded-xl p-6 mt-5">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-semibold text-sm tracking-wide">RECENT CLIPS</h2>
+          <span class="navitem !inline-flex !px-3 !py-1.5" style="color:var(--gold)" onclick="setView('clips')">View all →</span>
+        </div>
+        <div class="grid grid-cols-4 gap-4" id="overviewClips">
+          <div class="text-xs text-[color:var(--text-dim)] col-span-4 py-6 text-center">No clips yet. Upload a video to get started.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== UPLOAD ===== -->
+    <section class="view p-8" id="view-upload">
+      <h1 class="display text-2xl tracking-tight mb-1">UPLOAD &amp; PROCESS</h1>
+      <p class="text-[color:var(--text-dim)] text-sm mb-6">Drop raw cinematic footage. The pipeline detects shots, scores them, and cuts the winners.</p>
+
+      <div class="dropzone p-12 text-center cursor-pointer" id="dropzone">
+        <input type="file" id="fileInput" accept="video/*" class="hidden" multiple>
+        <svg class="mx-auto mb-3" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#d4af6a" stroke-width="1.4"><path d="M12 16V4m0 0l-4 4m4-4l4 4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="font-semibold text-sm mb-1">Drag &amp; drop video, or click to browse</div>
+        <div class="text-xs text-[color:var(--text-dim)]">MP4, MOV — processed entirely in this browser for this preview</div>
+      </div>
+
+      <div id="jobsList" class="space-y-4 mt-6"></div>
+    </section>
+
+    <!-- ===== CLIPS ===== -->
+    <section class="view p-8" id="view-clips">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="display text-2xl tracking-tight mb-1">CLIP LIBRARY</h1>
+          <p class="text-[color:var(--text-dim)] text-sm">Every clip the pipeline has cut, ranked by score.</p>
+        </div>
+        <select id="clipSort" class="panel2 text-xs rounded-lg px-3 py-2 border gold-border">
+          <option value="score">Sort: Score (high → low)</option>
+          <option value="recent">Sort: Most recent</option>
+        </select>
+      </div>
+      <div class="grid grid-cols-4 gap-5" id="clipGrid">
+        <div class="text-xs text-[color:var(--text-dim)] col-span-4 py-16 text-center panel rounded-xl">No clips yet — go to Upload &amp; Process.</div>
+      </div>
+    </section>
+
+    <!-- ===== ACCOUNTS ===== -->
+    <section class="view p-8" id="view-accounts">
+      <h1 class="display text-2xl tracking-tight mb-1">ACCOUNTS</h1>
+      <p class="text-[color:var(--text-dim)] text-sm mb-6">Where finished clips get pushed.</p>
+      <div class="grid grid-cols-3 gap-5" id="accountsGrid"></div>
+    </section>
+
+    <!-- ===== WORKFLOW ===== -->
+    <section class="view p-8" id="view-workflow">
+      <div class="flex items-center justify-between mb-2">
+        <div>
+          <h1 class="display text-2xl tracking-tight mb-1">WORKFLOW</h1>
+          <p class="text-[color:var(--text-dim)] text-sm">Click any node to configure it. Changes apply to the next run.</p>
+        </div>
+        <button class="panel2 border gold-border text-xs font-semibold px-4 py-2 rounded-lg goldtext hover:bg-[rgba(212,175,106,0.08)]" onclick="resetWorkflow()">Reset to default</button>
+      </div>
+      <div class="panel rounded-xl p-4 mt-4" style="overflow:auto;">
+        <div id="wfCanvas"></div>
+      </div>
+    </section>
+
+    <!-- ===== SETTINGS ===== -->
+    <section class="view p-8" id="view-settings">
+      <h1 class="display text-2xl tracking-tight mb-1">SETTINGS</h1>
+      <p class="text-[color:var(--text-dim)] text-sm mb-6">Tune how aggressively the pipeline cuts and posts.</p>
+
+      <div class="grid grid-cols-2 gap-5 max-w-3xl">
+        <div class="panel rounded-xl p-6">
+          <div class="flex items-center justify-between mb-1">
+            <h2 class="font-semibold text-sm">Fully automatic posting</h2>
+            <div class="toggle on" id="autoToggleSettings"><div class="knob"></div></div>
+          </div>
+          <p class="text-xs text-[color:var(--text-dim)] mt-2 leading-relaxed">When on, clips publish with no review step. When off, clips wait in a queue for approval.</p>
+        </div>
+
+        <div class="panel rounded-xl p-6">
+          <h2 class="font-semibold text-sm mb-3">Posting cadence</h2>
+          <div class="flex gap-2" id="cadenceButtons">
+            <button data-val="1" class="px-3 py-1.5 rounded-lg text-xs font-semibold border gold-border">1 / day</button>
+            <button data-val="2-3" class="px-3 py-1.5 rounded-lg text-xs font-semibold border gold-border">2–3 / day</button>
+            <button data-val="manual" class="px-3 py-1.5 rounded-lg text-xs font-semibold border gold-border">Manual</button>
+          </div>
+        </div>
+
+        <div class="panel rounded-xl p-6">
+          <h2 class="font-semibold text-sm mb-3">Clips per source video</h2>
+          <input type="range" min="1" max="10" value="5" id="clipCountSlider" class="w-full">
+          <div class="flex justify-between text-[11px] text-[color:var(--text-dim)] mt-2 mono">
+            <span>1</span><span id="clipCountVal" class="goldtext">5</span><span>10</span>
+          </div>
+        </div>
+
+        <div class="panel rounded-xl p-6">
+          <h2 class="font-semibold text-sm mb-3">Color grade intensity</h2>
+          <input type="range" min="0" max="100" value="45" id="gradeSlider" class="w-full">
+          <div class="flex justify-between text-[11px] text-[color:var(--text-dim)] mt-2 mono">
+            <span>Subtle</span><span id="gradeVal" class="goldtext">45%</span><span>Heavy</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- NODE CONFIG MODAL -->
+<div class="modal-backdrop hidden" id="modalBackdrop">
+  <div class="panel rounded-xl p-6 w-[380px]" id="modalBody"></div>
+</div>
+
+<script>
+/* ---------------- state ---------------- */
+const state = {
+  sources: 0,
+  clips: [],
+  settings: { auto:true, cadence:'2-3', clipCount:5, grade:45 },
+  workflow: {
+    scene:   {enabled:true},
+    score:   {enabled:true},
+    cut:     {enabled:true},
+    host:    {enabled:true},
+    instagram:{enabled:true},
+    log:     {enabled:true},
+  }
+};
+try{
+  const saved = localStorage.getItem('clipflow_state');
+  if(saved) Object.assign(state, JSON.parse(saved));
+}catch(e){}
+function persist(){ try{ localStorage.setItem('clipflow_state', JSON.stringify(state)); }catch(e){} }
+
+/* ---------------- nav ---------------- */
+function setView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('.navitem').forEach(n=>n.classList.toggle('active', n.dataset.view===name));
+  if(name==='workflow') renderWorkflow();
+  if(name==='clips') renderClipGrid();
+  if(name==='accounts') renderAccounts('accountsGrid', true);
+  if(name==='overview') renderOverview();
+}
+document.querySelectorAll('.navitem').forEach(n=>{
+  n.addEventListener('click', ()=>setView(n.dataset.view));
+});
+
+/* ---------------- clock ---------------- */
+function tickClock(){
+  const d = new Date();
+  document.getElementById('clockEl').textContent = d.toLocaleString('en-GB',{hour12:false}).toUpperCase()+' CET';
+}
+setInterval(tickClock, 1000); tickClock();
+
+/* ---------------- accounts ---------------- */
+const FAN_IDS = ['fan1','fan2','fan3','fan4','fan5'];
+const ACCOUNTS = [
+  {id:'fan1', name:'@evanluthra.fan1 (placeholder)', via:'Evan Luthra fan page · via Blotato', status:'pending', note:'Swap in the real handle'},
+  {id:'fan2', name:'@evanluthra.fan2 (placeholder)', via:'Evan Luthra fan page · via Blotato', status:'pending', note:'Swap in the real handle'},
+  {id:'fan3', name:'@evanluthra.fan3 (placeholder)', via:'Evan Luthra fan page · via Blotato', status:'pending', note:'Swap in the real handle'},
+  {id:'fan4', name:'@evanluthra.fan4 (placeholder)', via:'Evan Luthra fan page · via Blotato', status:'pending', note:'Swap in the real handle'},
+  {id:'fan5', name:'@evanluthra.fan5 (placeholder)', via:'Evan Luthra fan page · via Blotato', status:'pending', note:'Swap in the real handle'},
+  {id:'blotato', name:'Blotato relay', via:'posting backend', status:'pending', note:'Needs API key + allowlisted domain'},
+];
+function fanLabel(id){ const idx = FAN_IDS.indexOf(id); return idx>=0 ? 'FAN '+(idx+1) : ''; }
+function renderAccounts(targetId, big){
+  const el = document.getElementById(targetId);
+  el.innerHTML = ACCOUNTS.map(a=>`
+    <div class="panel2 rounded-lg p-4 ${big?'':'flex items-center justify-between'}">
+      <div>
+        <div class="font-semibold text-sm">${a.name}</div>
+        <div class="text-[11px] text-[color:var(--text-dim)] mt-0.5">${a.via}</div>
+      </div>
+      <div class="${big?'mt-3':''}">
+        <span class="badge ${a.status}">${a.status==='ok'?'● LIVE':a.status==='pending'?'◐ PENDING':'○ OFF'}</span>
+        <div class="text-[11px] text-[color:var(--text-dim)] mt-2">${a.note}</div>
+      </div>
+    </div>`).join('');
+}
+renderAccounts('overviewAccounts', false);
+
+/* ---------------- workflow canvas ---------------- */
+const NODE_DEFS = [
+  {id:'source',   x:20,  y:260, title:'Source Footage',       sub:'Your cinematic clips', icon:'🎬', fixed:true},
+  {id:'scene',    x:260, y:80,  title:'Scene Detection',      sub:'PySceneDetect', icon:'✂️'},
+  {id:'score',    x:260, y:260, title:'Visual Scoring',       sub:'Motion · exposure · sharpness', icon:'📊'},
+  {id:'cut',      x:260, y:440, title:'Cut + Color Grade',    sub:'FFmpeg · 9:16 crop', icon:'🎨'},
+  {id:'host',     x:540, y:260, title:'Media Hosting',        sub:'Public URL for posting', icon:'☁️'},
+  {id:'instagram',x:800, y:190, title:'5 Fan Pages',          sub:'Evan Luthra IG accounts, round-robin', icon:'📸'},
+  {id:'log',      x:800, y:400, title:'Activity Log',         sub:'Sheet of what posted, where, when', icon:'📋'},
+];
+const EDGES = [
+  ['source','scene'],['source','score'],['source','cut'],
+  ['scene','cut'],['score','cut'],
+  ['cut','host'],
+  ['host','instagram'],
+  ['instagram','log'],
+];
+function renderWorkflow(){
+  const canvas = document.getElementById('wfCanvas');
+  canvas.innerHTML = `<svg class="wires" id="wfWires"></svg>`;
+  NODE_DEFS.forEach(n=>{
+    const enabled = n.fixed || (state.workflow[n.id] ? state.workflow[n.id].enabled : true);
+    const div = document.createElement('div');
+    div.className = 'node' + (enabled ? '' : ' disabled');
+    div.style.left = n.x+'px'; div.style.top = n.y+'px';
+    div.innerHTML = `
+      <div class="nicon" style="background:rgba(212,175,106,0.1)">${n.icon}</div>
+      <div class="ntitle">${n.title}</div>
+      <div class="nsub">${n.sub}</div>`;
+    if(!n.fixed){
+      div.addEventListener('click', ()=>openNodeModal(n.id));
+    }
+    canvas.appendChild(div);
+  });
+  requestAnimationFrame(()=>{
+    const svg = document.getElementById('wfWires');
+    let paths = '';
+    EDGES.forEach(([from,to])=>{
+      const a = NODE_DEFS.find(n=>n.id===from), b = NODE_DEFS.find(n=>n.id===to);
+      const x1=a.x+190, y1=a.y+34, x2=b.x, y2=b.y+34;
+      const mx=(x1+x2)/2;
+      const live = (a.fixed || state.workflow[from]?.enabled!==false) && (state.workflow[to] ? state.workflow[to].enabled : true);
+      paths += `<path class="wire ${live?'live':''}" d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}"/>`;
+    });
+    svg.innerHTML = paths;
+    canvas.style.height = '620px';
+    canvas.style.minWidth = '1020px';
+  });
+}
+function openNodeModal(id){
+  const n = NODE_DEFS.find(x=>x.id===id);
+  const cfg = state.workflow[id] || {enabled:true};
+  const backdrop = document.getElementById('modalBackdrop');
+  document.getElementById('modalBody').innerHTML = `
+    <div class="flex items-center justify-between mb-4">
+      <div class="font-semibold text-sm">${n.icon}  ${n.title}</div>
+      <div class="toggle ${cfg.enabled?'on':''}" id="modalToggle"><div class="knob"></div></div>
+    </div>
+    <p class="text-xs text-[color:var(--text-dim)] mb-4 leading-relaxed">${n.sub}. ${cfg.enabled? 'This step is active in the pipeline.' : 'This step is skipped — downstream nodes will treat its output as empty.'}</p>
+    <div class="flex justify-end gap-2">
+      <button class="text-xs px-3 py-1.5 rounded-lg panel2" onclick="closeModal()">Close</button>
+    </div>`;
+  backdrop.classList.remove('hidden');
+  document.getElementById('modalToggle').addEventListener('click', ()=>{
+    cfg.enabled = !cfg.enabled;
+    state.workflow[id] = cfg;
+    persist();
+    openNodeModal(id);
+    renderWorkflow();
+  });
+}
+function closeModal(){ document.getElementById('modalBackdrop').classList.add('hidden'); }
+document.getElementById('modalBackdrop').addEventListener('click', e=>{ if(e.target.id==='modalBackdrop') closeModal(); });
+function resetWorkflow(){
+  state.workflow = {scene:{enabled:true},score:{enabled:true},cut:{enabled:true},host:{enabled:true},instagram:{enabled:true},log:{enabled:true}};
+  persist(); renderWorkflow();
+}
+
+/* ---------------- upload + client-side analysis ---------------- */
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+dropzone.addEventListener('click', ()=>fileInput.click());
+['dragover','dragenter'].forEach(ev=>dropzone.addEventListener(ev, e=>{e.preventDefault(); dropzone.classList.add('drag');}));
+['dragleave','drop'].forEach(ev=>dropzone.addEventListener(ev, e=>{e.preventDefault(); dropzone.classList.remove('drag');}));
+dropzone.addEventListener('drop', e=>{ handleFiles(e.dataTransfer.files); });
+fileInput.addEventListener('change', e=>handleFiles(e.target.files));
+
+function handleFiles(files){
+  [...files].forEach(f=>{
+    if(!f.type.startsWith('video/')) return;
+    state.sources++;
+    runJob(f);
+  });
+}
+
+const STEPS = [
+  {key:'scene', label:'Scene Detection'},
+  {key:'score', label:'Visual Scoring'},
+  {key:'cut',   label:'Cut + Grade'},
+  {key:'host',  label:'Hosting'},
+  {key:'post',  label:'Posting'},
+];
+
+function runJob(file){
+  const jobId = 'job_'+Math.random().toString(36).slice(2,9);
+  const jobsList = document.getElementById('jobsList');
+  const url = URL.createObjectURL(file);
+
+  const card = document.createElement('div');
+  card.className = 'panel rounded-xl p-5';
+  card.innerHTML = `
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-3">
+        <video src="${url}" class="w-16 h-10 object-cover rounded" muted></video>
+        <div>
+          <div class="font-semibold text-sm">${file.name}</div>
+          <div class="text-[11px] text-[color:var(--text-dim)] mono" id="${jobId}_meta">reading metadata…</div>
+        </div>
+      </div>
+      <span class="badge pending" id="${jobId}_badge">QUEUED</span>
+    </div>
+    <div class="flex items-center" id="${jobId}_steps"></div>
+    <div class="grid grid-cols-5 gap-3 mt-4 hidden" id="${jobId}_results"></div>
+  `;
+  jobsList.prepend(card);
+
+  const stepsEl = document.getElementById(jobId+'_steps');
+  stepsEl.innerHTML = STEPS.map((s,i)=>`
+    <div class="step-dot" id="${jobId}_dot_${i}">${i+1}</div>
+    ${i<STEPS.length-1 ? `<div class="step-line"><div class="fill" id="${jobId}_line_${i}"></div></div>` : ''}
+  `).join('');
+
+  const video = document.createElement('video');
+  video.src = url; video.muted = true; video.preload='metadata';
+  video.addEventListener('loadedmetadata', ()=>{
+    document.getElementById(jobId+'_meta').textContent =
+      `${video.duration.toFixed(1)}s · ${video.videoWidth}×${video.videoHeight}`;
+    analyzeAndRun(video, file, jobId);
+  });
+}
+
+async function grabFrameScore(video, t, canvas, ctx){
+  return new Promise(resolve=>{
+    const onSeeked = ()=>{
+      video.removeEventListener('seeked', onSeeked);
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const data = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+      let sum=0, sumSq=0, n=data.length/4;
+      for(let i=0;i<data.length;i+=4){
+        const lum = 0.299*data[i] + 0.587*data[i+1] + 0.114*data[i+2];
+        sum += lum; sumSq += lum*lum;
+      }
+      const mean = sum/n;
+      const variance = sumSq/n - mean*mean;
+      resolve({mean, contrast:Math.sqrt(Math.max(variance,0)), imageData:canvas.toDataURL('image/jpeg',0.6)});
+    };
+    video.addEventListener('seeked', onSeeked);
+    video.currentTime = Math.min(t, video.duration - 0.05);
+  });
+}
+
+async function analyzeAndRun(video, file, jobId){
+  const setStep = async (i, pct)=>{
+    document.getElementById(jobId+'_dot_'+i).classList.add('active');
+    document.getElementById(jobId+'_badge').textContent = STEPS[i].label.toUpperCase();
+    await sleep(350 + Math.random()*350);
+    document.getElementById(jobId+'_dot_'+i).classList.remove('active');
+    document.getElementById(jobId+'_dot_'+i).classList.add('done');
+    if(document.getElementById(jobId+'_line_'+i)) document.getElementById(jobId+'_line_'+i).style.width='100%';
+  };
+
+  await setStep(0, 100);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 160; canvas.height = 90;
+  const ctx = canvas.getContext('2d');
+  const dur = video.duration;
+  const n = Math.min(state.settings.clipCount, 8);
+  const samples = [];
+  for(let i=0;i<n;i++){
+    const t = (dur/(n+1)) * (i+1);
+    const r = await grabFrameScore(video, t, canvas, ctx);
+    samples.push({t, ...r});
+  }
+  await setStep(1, 100);
+
+  const scored = samples.map((s,i)=>{
+    const prev = samples[i-1];
+    const motion = prev ? Math.min(1, Math.abs(s.mean - prev.mean)/40) : 0.3;
+    const brightnessScore = 1 - Math.min(1, Math.abs(s.mean - 125)/125);
+    const contrastScore = Math.min(1, s.contrast/60);
+    const score = (motion*0.35 + brightnessScore*0.3 + contrastScore*0.35);
+    return {...s, score: Math.round(score*100)/100};
+  }).sort((a,b)=>b.score-a.score);
+
+  await setStep(2, 100);
+  await setStep(3, 100);
+  await setStep(4, 100);
+
+  document.getElementById(jobId+'_badge').textContent = 'DONE';
+  document.getElementById(jobId+'_badge').className = 'badge ok';
+
+  const top = scored.slice(0, Math.min(4, scored.length));
+  const resultsEl = document.getElementById(jobId+'_results');
+  resultsEl.classList.remove('hidden');
+  resultsEl.innerHTML = top.map((c,i)=>`
+    <div class="clip-card">
+      <img src="${c.imageData}" class="w-full h-20 object-cover">
+      <div class="p-2">
+        <div class="mono text-[10px] goldtext">SCORE ${c.score}</div>
+        <div class="text-[10px] text-[color:var(--text-dim)] mt-1">t=${c.t.toFixed(1)}s</div>
+      </div>
+    </div>`).join('');
+
+  top.forEach((c,i)=>{
+    const fanId = FAN_IDS[(state.clips.length + i) % FAN_IDS.length];
+    state.clips.unshift({
+      id:'clip_'+Math.random().toString(36).slice(2,8),
+      name: file.name.replace(/\.[^.]+$/,'') + ' — cut '+(i+1),
+      score: c.score,
+      thumb: c.imageData,
+      time: new Date().toISOString(),
+      pushedTo: state.workflow.instagram.enabled ? [fanId] : [],
+    });
+  });
+  persist();
+  renderOverview();
+}
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+/* ---------------- clip library + overview rendering ---------------- */
+function clipCardHTML(c){
+  return `
+    <div class="clip-card">
+      <img src="${c.thumb}" class="w-full h-28 object-cover">
+      <div class="p-3">
+        <div class="font-semibold text-xs truncate">${c.name}</div>
+        <div class="flex items-center justify-between mt-2">
+          <span class="mono text-[10px] goldtext">SCORE ${c.score}</span>
+          ${c.pushedTo.length ? `<span class="badge ok">● ${fanLabel(c.pushedTo[0])}</span>` : '<span class="badge pending">◐ QUEUED</span>'}
+        </div>
+      </div>
+    </div>`;
+}
+function renderClipGrid(){
+  const el = document.getElementById('clipGrid');
+  if(!state.clips.length){ el.innerHTML = `<div class="text-xs text-[color:var(--text-dim)] col-span-4 py-16 text-center panel rounded-xl">No clips yet — go to Upload &amp; Process.</div>`; return; }
+  const sortBy = document.getElementById('clipSort').value;
+  const list = [...state.clips].sort((a,b)=> sortBy==='score' ? b.score-a.score : new Date(b.time)-new Date(a.time));
+  el.innerHTML = list.map(clipCardHTML).join('');
+}
+document.getElementById('clipSort').addEventListener('change', renderClipGrid);
+
+function renderOverview(){
+  document.getElementById('statSources').textContent = state.sources;
+  document.getElementById('statClips').textContent = state.clips.length;
+  document.getElementById('statPosted').textContent = state.clips.filter(c=>c.pushedTo.length).length;
+  document.getElementById('statScore').textContent = state.clips.length ? (state.clips.reduce((a,c)=>a+c.score,0)/state.clips.length).toFixed(2) : '—';
+
+  const miniSteps = document.getElementById('miniSteps');
+  miniSteps.innerHTML = STEPS.map((s,i)=>`
+    <div class="step-dot done" style="width:22px;height:22px;font-size:0.6rem;">${i+1}</div>
+    ${i<STEPS.length-1 ? '<div class="step-line"><div class="fill" style="width:100%"></div></div>' : ''}
+  `).join('');
+  document.getElementById('pipelineBadge').textContent = state.clips.length ? 'ACTIVE' : 'IDLE';
+  document.getElementById('pipelineBadge').className = 'badge ' + (state.clips.length ? 'ok' : 'pending');
+
+  const ov = document.getElementById('overviewClips');
+  if(!state.clips.length){
+    ov.innerHTML = `<div class="text-xs text-[color:var(--text-dim)] col-span-4 py-6 text-center">No clips yet. Upload a video to get started.</div>`;
+  } else {
+    ov.innerHTML = state.clips.slice(0,4).map(clipCardHTML).join('');
+  }
+}
+
+/* ---------------- settings wiring ---------------- */
+function syncToggle(el, val){ el.classList.toggle('on', val); }
+document.getElementById('autoToggleSidebar').addEventListener('click', ()=>{
+  state.settings.auto = !state.settings.auto; persist();
+  syncToggle(document.getElementById('autoToggleSidebar'), state.settings.auto);
+  syncToggle(document.getElementById('autoToggleSettings'), state.settings.auto);
+});
+document.getElementById('autoToggleSettings').addEventListener('click', ()=>{
+  state.settings.auto = !state.settings.auto; persist();
+  syncToggle(document.getElementById('autoToggleSidebar'), state.settings.auto);
+  syncToggle(document.getElementById('autoToggleSettings'), state.settings.auto);
+});
+
+document.querySelectorAll('#cadenceButtons button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    state.settings.cadence = btn.dataset.val; persist(); renderCadenceButtons();
+  });
+});
+function renderCadenceButtons(){
+  document.querySelectorAll('#cadenceButtons button').forEach(btn=>{
+    const active = btn.dataset.val === state.settings.cadence;
+    btn.style.background = active ? 'rgba(212,175,106,0.15)' : 'transparent';
+    btn.style.color = active ? 'var(--gold-bright)' : '#a9a9ad';
+  });
+}
+
+document.getElementById('clipCountSlider').addEventListener('input', e=>{
+  state.settings.clipCount = +e.target.value;
+  document.getElementById('clipCountVal').textContent = e.target.value;
+  persist();
+});
+document.getElementById('gradeSlider').addEventListener('input', e=>{
+  state.settings.grade = +e.target.value;
+  document.getElementById('gradeVal').textContent = e.target.value+'%';
+  persist();
+});
+
+/* ---------------- init ---------------- */
+function init(){
+  syncToggle(document.getElementById('autoToggleSidebar'), state.settings.auto);
+  syncToggle(document.getElementById('autoToggleSettings'), state.settings.auto);
+  document.getElementById('clipCountSlider').value = state.settings.clipCount;
+  document.getElementById('clipCountVal').textContent = state.settings.clipCount;
+  document.getElementById('gradeSlider').value = state.settings.grade;
+  document.getElementById('gradeVal').textContent = state.settings.grade+'%';
+  renderCadenceButtons();
+  renderOverview();
+
+  const hash = location.hash.replace('#','');
+  if(['overview','upload','clips','accounts','workflow','settings'].includes(hash)) setView(hash);
+}
+window.addEventListener('hashchange', ()=>{
+  const hash = location.hash.replace('#','');
+  if(['overview','upload','clips','accounts','workflow','settings'].includes(hash)) setView(hash);
+});
+init();
+</script>
+</body>
+</html>
