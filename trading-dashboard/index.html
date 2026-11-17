@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pranav Arya Film Production</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #050507;
+      --deep: #0a0a0f;
+      --gold: #c9a84c;
+      --gold-dim: #7a6228;
+      --white: #f0ece4;
+      --grey: #3a3a3a;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-serif);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease;
+      mix-blend-mode: difference;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(201,168,76,0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: all 0.18s ease;
+    }
+
+    /* ─── CANVAS ─── */
+    #bg-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 52px;
+      mix-blend-mode: normal;
+    }
+    nav::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 52px; right: 52px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      opacity: 0.4;
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      color: var(--white);
+      text-decoration: none;
+      opacity: 0.6;
+      text-transform: uppercase;
+      transition: opacity 0.3s, color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover { opacity: 1; color: var(--gold); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ─── HERO ─── */
+    #hero {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 52px 72px;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      opacity: 0;
+      animation: fadeUp 1s 0.4s forwards;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(5rem, 12vw, 13rem);
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      opacity: 0;
+      animation: fadeUp 1s 0.7s forwards;
+      position: relative;
+    }
+    .hero-title .gold { color: var(--gold); }
+    .hero-title .outline {
+      -webkit-text-stroke: 1px rgba(240,236,228,0.25);
+      color: transparent;
+    }
+
+    .hero-sub {
+      margin-top: 28px;
+      max-width: 420px;
+      font-size: 1.05rem;
+      font-style: italic;
+      color: rgba(240,236,228,0.55);
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 1s 1s forwards;
+    }
+
+    .hero-ctas {
+      margin-top: 44px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      opacity: 0;
+      animation: fadeUp 1s 1.3s forwards;
+    }
+    .btn-primary {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--black);
+      background: var(--gold);
+      padding: 14px 32px;
+      text-decoration: none;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .btn-primary:hover { background: #e8c76e; transform: translateY(-2px); }
+    .btn-ghost {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white);
+      border: 1px solid rgba(240,236,228,0.3);
+      padding: 14px 32px;
+      text-decoration: none;
+      transition: border-color 0.3s, color 0.3s, transform 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+
+    /* scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      right: 52px;
+      bottom: 72px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      animation: fadeIn 1s 1.8s forwards;
+    }
+    .scroll-hint span {
+      font-family: var(--font-mono);
+      font-size: 0.52rem;
+      letter-spacing: 0.25em;
+      color: rgba(240,236,228,0.4);
+      writing-mode: vertical-rl;
+      text-transform: uppercase;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(var(--gold), transparent);
+      animation: scrollPulse 2s 2s infinite;
+    }
+
+    /* frame number overlay */
+    .frame-counter {
+      position: fixed;
+      bottom: 28px;
+      left: 52px;
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      color: rgba(201,168,76,0.35);
+      letter-spacing: 0.12em;
+      z-index: 50;
+    }
+
+    /* ─── ABOUT SECTION ─── */
+    #about {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 120px 52px;
+      gap: 80px;
+    }
+    #about::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      opacity: 0.3;
+    }
+    .about-label {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .about-heading {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 6vw, 6rem);
+      line-height: 1;
+      letter-spacing: 0.03em;
+      margin-bottom: 32px;
+    }
+    .about-body {
+      font-size: 1.1rem;
+      font-style: italic;
+      line-height: 1.85;
+      color: rgba(240,236,228,0.65);
+      max-width: 480px;
+    }
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+    .stat-card {
+      background: rgba(201,168,76,0.04);
+      border: 1px solid rgba(201,168,76,0.12);
+      padding: 36px 28px;
+      transition: background 0.3s;
+    }
+    .stat-card:hover { background: rgba(201,168,76,0.09); }
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      color: rgba(240,236,228,0.4);
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    /* ─── WORK SECTION ─── */
+    #work {
+      position: relative;
+      z-index: 10;
+      padding: 120px 52px;
+    }
+    #work::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      opacity: 0.3;
+    }
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 60px;
+    }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      line-height: 1;
+      letter-spacing: 0.03em;
+    }
+    .view-all {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      text-transform: uppercase;
+      text-decoration: none;
+      border-bottom: 1px solid var(--gold-dim);
+      padding-bottom: 4px;
+      transition: opacity 0.3s;
+    }
+    .view-all:hover { opacity: 0.7; }
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .work-item {
+      position: relative;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      background: var(--deep);
+      cursor: pointer;
+    }
+    .work-item-bg {
+      width: 100%; height: 100%;
+      transition: transform 0.6s ease;
+    }
+    .work-item:hover .work-item-bg { transform: scale(1.06); }
+    .work-item-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(5,5,7,0.9) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.4s;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 28px;
+    }
+    .work-item:hover .work-item-overlay { opacity: 1; }
+    .work-item-cat {
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .work-item-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── CONTACT ─── */
+    #contact {
+      position: relative;
+      z-index: 10;
+      padding: 140px 52px;
+      text-align: center;
+    }
+    #contact::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      opacity: 0.3;
+    }
+    .contact-label {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .contact-title {
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 9vw, 10rem);
+      line-height: 0.9;
+      letter-spacing: 0.03em;
+      margin-bottom: 40px;
+    }
+    .contact-email {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      font-style: italic;
+      color: rgba(240,236,228,0.55);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(201,168,76,0.3);
+      padding-bottom: 4px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .contact-email:hover { color: var(--gold); border-color: var(--gold); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      position: relative;
+      z-index: 10;
+      padding: 28px 52px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    footer p {
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      color: rgba(240,236,228,0.3);
+      letter-spacing: 0.12em;
+    }
+    .social-links {
+      display: flex;
+      gap: 24px;
+    }
+    .social-links a {
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      color: rgba(240,236,228,0.3);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    .social-links a:hover { color: var(--gold); }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes scrollPulse {
+      0%,100% { opacity: 0.5; transform: scaleY(1); }
+      50%      { opacity: 1;   transform: scaleY(1.15); }
+    }
+
+    /* grain overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.028;
+      pointer-events: none;
+      z-index: 9990;
+    }
+
+    /* responsive */
+    @media (max-width: 900px) {
+      nav, #hero, #about, #work, #contact, footer { padding-left: 28px; padding-right: 28px; }
+      nav::after { left: 28px; right: 28px; }
+      #about { grid-template-columns: 1fr; gap: 52px; }
+      .work-grid { grid-template-columns: 1fr 1fr; }
+      .scroll-hint { right: 28px; }
+      .frame-counter { left: 28px; }
+    }
+    @media (max-width: 560px) {
+      .work-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">PAFP</a>
+  <ul class="nav-links">
+    <li><a href="#work">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <p class="hero-eyebrow">Photography &amp; Filmmaking</p>
+  <h1 class="hero-title">
+    PRANAV<br>
+    <span class="gold">ARYA</span><br>
+    <span class="outline">FILM</span>
+  </h1>
+  <p class="hero-sub">Crafting visual narratives that linger long after the screen fades to black.</p>
+  <div class="hero-ctas">
+    <a href="#work" class="btn-primary">View Work</a>
+    <a href="#contact" class="btn-ghost">Get in Touch</a>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div>
+    <p class="about-label">The Vision</p>
+    <h2 class="about-heading">EVERY FRAME<br>TELLS A<br><span style="color:var(--gold)">STORY</span></h2>
+    <p class="about-body">Pranav Arya is a filmmaker and photographer obsessed with the liminal — the quiet spaces between moments where emotion lives. From intimate documentaries to cinematic commercial work, every project is built on the foundation of light, shadow, and truth.</p>
+  </div>
+  <div class="about-stats">
+    <div class="stat-card">
+      <div class="stat-number">08+</div>
+      <div class="stat-label">Years of Experience</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">60+</div>
+      <div class="stat-label">Projects Completed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">12+</div>
+      <div class="stat-label">Awards Won</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">3</div>
+      <div class="stat-label">Continents</div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section id="work">
+  <div class="section-header">
+    <div>
+      <p class="section-label">Selected Work</p>
+      <h2 class="section-title">THE REEL</h2>
+    </div>
+    <a href="#" class="view-all">View All Projects</a>
+  </div>
+  <div class="work-grid">
+    <div class="work-item">
+      <canvas class="work-item-bg" id="c1"></canvas>
+      <div class="work-item-overlay">
+        <p class="work-item-cat">Documentary</p>
+        <p class="work-item-title">SILENT MONSOON</p>
+      </div>
+    </div>
+    <div class="work-item">
+      <canvas class="work-item-bg" id="c2"></canvas>
+      <div class="work-item-overlay">
+        <p class="work-item-cat">Photography</p>
+        <p class="work-item-title">GOLDEN HOUR</p>
+      </div>
+    </div>
+    <div class="work-item">
+      <canvas class="work-item-bg" id="c3"></canvas>
+      <div class="work-item-overlay">
+        <p class="work-item-cat">Commercial</p>
+        <p class="work-item-title">NEON CITY</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="contact-label">Let's Collaborate</p>
+  <h2 class="contact-title">LET'S<br><span style="color:var(--gold)">TALK</span></h2>
+  <a href="mailto:hello@pranavaryafilms.com" class="contact-email">hello@pranavaryafilms.com</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Pranav Arya Film Production. All rights reserved.</p>
+  <div class="social-links">
+    <a href="#">Instagram</a>
+    <a href="#">Vimeo</a>
+    <a href="#">LinkedIn</a>
+  </div>
+</footer>
+
+<!-- FRAME COUNTER -->
+<div class="frame-counter" id="frame-counter">00:00:01:00</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ─── CURSOR ───
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top  = my + 'px';
+});
+(function animRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) *.12;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(animRing);
+})();
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => ring.style.transform = 'translate(-50%,-50%) scale(1.8)');
+  el.addEventListener('mouseleave', () => ring.style.transform = 'translate(-50%,-50%) scale(1)');
+});
+
+// ─── THREE.JS HERO BG ───
+const canvas = document.getElementById('bg-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 0, 6);
+
+// Ambient
+scene.add(new THREE.AmbientLight(0x050510, 1));
+
+// Gold point lights
+const light1 = new THREE.PointLight(0xc9a84c, 2.5, 30);
+light1.position.set(4, 3, 3);
+scene.add(light1);
+
+const light2 = new THREE.PointLight(0x3a2a08, 1.5, 20);
+light2.position.set(-5, -3, 2);
+scene.add(light2);
+
+const rimLight = new THREE.PointLight(0xc9a84c, 0.8, 25);
+rimLight.position.set(0, -6, -4);
+scene.add(rimLight);
+
+// Floating film-frame particles
+const particleCount = 180;
+const positions = new Float32Array(particleCount * 3);
+const scales = new Float32Array(particleCount);
+for (let i = 0; i < particleCount; i++) {
+  positions[i*3]   = (Math.random()-0.5)*22;
+  positions[i*3+1] = (Math.random()-0.5)*16;
+  positions[i*3+2] = (Math.random()-0.5)*12;
+  scales[i] = Math.random();
+}
+const pGeo = new THREE.BufferGeometry();
+pGeo.setAttribute('position', new THREE.BufferAttribute(positions,3));
+const pMat = new THREE.PointsMaterial({ color: 0xc9a84c, size: 0.04, transparent: true, opacity: 0.35 });
+scene.add(new THREE.Points(pGeo, pMat));
+
+// Large abstract floating geometry — octahedron wireframe
+const geoA = new THREE.OctahedronGeometry(2.2, 1);
+const matA = new THREE.MeshStandardMaterial({
+  color: 0x0a0a0f,
+  emissive: 0x1a1206,
+  roughness: 0.3,
+  metalness: 0.95,
+  wireframe: false
+});
+const meshA = new THREE.Mesh(geoA, matA);
+meshA.position.set(3, -0.5, -1);
+scene.add(meshA);
+
+// Wire overlay
+const wireGeo = new THREE.OctahedronGeometry(2.22, 1);
+const wireMat = new THREE.MeshBasicMaterial({ color: 0xc9a84c, wireframe: true, opacity: 0.12, transparent: true });
+const wireMesh = new THREE.Mesh(wireGeo, wireMat);
+wireMesh.position.copy(meshA.position);
+scene.add(wireMesh);
+
+// Smaller gem
+const geoB = new THREE.IcosahedronGeometry(0.8, 1);
+const matB = new THREE.MeshStandardMaterial({ color: 0x080810, emissive: 0x0d0c02, metalness: 1, roughness: 0.15 });
+const meshB = new THREE.Mesh(geoB, matB);
+meshB.position.set(-3.5, 1.5, 0);
+scene.add(meshB);
+
+// Horizontal film-strip bars
+for (let i = 0; i < 4; i++) {
+  const barGeo = new THREE.BoxGeometry(0.02, 0.06, 0.01);
+  const barMat = new THREE.MeshBasicMaterial({ color: 0xc9a84c, opacity: 0.18, transparent: true });
+  const bar = new THREE.Mesh(barGeo, barMat);
+  bar.position.set(-4 + i * 2.8, -3.2, 1);
+  scene.add(bar);
+}
+
+// Mouse parallax
+let mouseX = 0, mouseY = 0;
+document.addEventListener('mousemove', e => {
+  mouseX = (e.clientX / window.innerWidth  - 0.5) * 2;
+  mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+});
+
+// Resize
+window.addEventListener('resize', () => {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+});
+
+// ─── WORK CARD CANVASES ───
+function drawCardCanvas(canvasId, palette) {
+  const c = document.getElementById(canvasId);
+  c.width = c.offsetWidth * 2;
+  c.height = c.offsetHeight * 2;
+  const ctx = c.getContext('2d');
+  const w = c.width, h = c.height;
+
+  const grad = ctx.createLinearGradient(0, 0, w, h);
+  palette.forEach((stop, i) => grad.addColorStop(i/(palette.length-1), stop));
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,w,h);
+
+  ctx.strokeStyle = 'rgba(201,168,76,0.07)';
+  ctx.lineWidth = 1;
+  const step = 40;
+  for(let x = 0; x < w; x += step) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
+  for(let y = 0; y < h; y += step) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+
+  for(let i=0;i<28;i++){
+    const x=Math.random()*w, y=Math.random()*h, r=Math.random()*1.2+0.4;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(201,168,76,${Math.random()*0.25+0.05})`; ctx.fill();
+  }
+}
+drawCardCanvas('c1', ['#050510','#0d0c1a','#1a1508']);
+drawCardCanvas('c2', ['#0a0805','#1a1105','#0a0a0f']);
+drawCardCanvas('c3', ['#040808','#080d10','#050510']);
+
+// ─── FRAME COUNTER ───
+let frame = 0;
+function updateCounter() {
+  frame++;
+  const f = frame % 24;
+  const s = Math.floor(frame/24) % 60;
+  const m = Math.floor(frame/1440) % 60;
+  const h = Math.floor(frame/86400);
+  const pad = n => String(n).padStart(2,'0');
+  document.getElementById('frame-counter').textContent =
+    `${pad(h)}:${pad(m)}:${pad(s)}:${pad(f)}`;
+}
+
+// ─── RENDER LOOP ───
+let t = 0;
+function animate() {
+  requestAnimationFrame(animate);
+  t += 0.008;
+
+  // parallax camera
+  camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.03;
+  camera.position.y += (-mouseY * 0.3 - camera.position.y) * 0.03;
+  camera.lookAt(0,0,0);
+
+  // rotate objects
+  meshA.rotation.y = t * 0.25;
+  meshA.rotation.x = Math.sin(t * 0.18) * 0.3;
+  wireMesh.rotation.copy(meshA.rotation);
+  meshB.rotation.y = -t * 0.35;
+  meshB.rotation.z = t * 0.2;
+
+  // light pulse
+  light1.intensity = 2.5 + Math.sin(t*1.3)*0.5;
+
+  updateCounter();
+  renderer.render(scene, camera);
+}
+animate();
+</script>
+</body>
+</html>
