@@ -181,34 +181,18 @@
           'Team size': f.size.value, 'Automation needed': f.message.value
         })
       }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok || j.success === 'false' || j.success === false) throw new Error('fail'); }); })
-        .then(function () { form.reset(); status.textContent = 'Thank you. Your message is with us and we will reply by email soon.'; })
-        .catch(function () { status.textContent = 'Sorry, that did not go through. Please write to ' + CONTACT + ' instead.'; })
+        .then(function () { form.reset(); status.textContent = 'Thank you. Your message is with us and we will reply by email soon.'; if (window.NorthlightTrack) window.NorthlightTrack('contact_form_success'); })
+        .catch(function () { status.textContent = 'Sorry, that did not go through. Please write to ' + CONTACT + ' instead.'; if (window.NorthlightTrack) window.NorthlightTrack('contact_form_failure'); })
         .then(function () { if (btn) btn.disabled = false; });
     });
   }
 
 
-  /* Visitor alert: approximate city and country (no IP stored or forwarded) sent to a private Discord channel, once per visit.
-     Skipped when the browser sends Do Not Track or Global Privacy Control. Disclosed on the Privacy page. */
+  /* The shared tracker is used on all Northlight pages, including the live demos. */
   (function () {
-    var HOOK = 'https://discord.com/api/webhooks/1564245448460337202/FS-PdCPIvOi4lLIgIKN7sWHGkz5XVUkDLJw2Qys8352jEMHTGtFr8_W7D8okOYxHIBQS';
-    if (!HOOK || /^(localhost|127\.|0\.0\.0\.0)/.test(location.hostname) || location.protocol === 'file:') return;
-    if (navigator.doNotTrack === '1' || window.doNotTrack === '1' || navigator.globalPrivacyControl) return;
-    try { if (sessionStorage.getItem('nl_seen')) return; sessionStorage.setItem('nl_seen', '1'); } catch (e) {}
-    fetch('https://ipapi.co/json/').then(function (r) { return r.json(); }).then(function (g) {
-      var place = (g.city || 'Unknown city') + (g.region ? ', ' + g.region : '') + ', ' + (g.country_name || 'Unknown country');
-      var time = ''; try { time = new Date().toLocaleString('en-GB', { timeZone: g.timezone || 'UTC', dateStyle: 'medium', timeStyle: 'short' }); } catch (e) {}
-      var device = /Mobi|Android|iPhone/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop';
-      var src = 'Direct'; try { if (document.referrer) src = new URL(document.referrer).hostname; } catch (e) {}
-      var page = location.pathname.replace(/^\//, '') || 'Home';
-      return fetch(HOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-        username: 'Northlight visitors',
-        embeds: [{ title: 'New visit to Northlight Agents', color: 0x1B46C9, fields: [
-          { name: 'Location', value: place, inline: true }, { name: 'Local time', value: time || 'n/a', inline: true },
-          { name: 'Device', value: device, inline: true }, { name: 'Page', value: page, inline: true }, { name: 'Came from', value: src, inline: true }
-        ] }]
-      }) });
-    }).catch(function () {});
+    var trackingScript=document.createElement('script');
+    trackingScript.src='visitor-tracking.js';
+    document.head.appendChild(trackingScript);
   })();
 
   var y = document.getElementById('yr'); if (y) y.textContent = new Date().getFullYear();
